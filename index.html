@@ -1,247 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=60mm, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Ticket</title>
   <style>
-    body { font-family: Tahoma, Helvetica, sans-serif; margin:0; font-size:3mm; text-align:center; }
-    #thermal-pos { max-width:60mm; margin:0 auto; }
-    .logo img{ width:120px; height:auto; }
-    .m-0{ margin:0; padding:0; }
-    table{ width:100%; border-collapse:collapse; }
-    th, td{ padding:2px 4px; text-align:left; vertical-align:top; }
-    .right{ text-align:right; }
-    .small{ font-size:2.5mm; }
-    #debug{ font-size:2.5mm; text-align:left; background:#f6f6f6; padding:4px; margin-top:6px; display:none; white-space:pre-wrap; }
+    body { font-family: Arial, sans-serif; text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    td, th { padding: 4px; font-size: 14px; text-align: center; }
+    th { border-bottom: 1px solid #000; }
+    .totales { margin-top: 15px; text-align: left; }
+    .totales td { padding: 3px; font-size: 16px; font-weight: bold; }
   </style>
 </head>
-<body onload="init()" onfocus="window.close()">
-
-<div id="thermal-pos">
-  <div style="text-align:center;">
-    <div class="logo"><img src="logo.png" alt="logo"></div>
-    <h3 class="m-0">EL RAPIDIN<br> Caldos - Chifa - Broaster<br> San Martin de Pangoa</h3>
-  </div>
-
-  <div>
-    <b>TICKET:</b>
-    <h1 id="nro_boleta" class="m-0"></h1>
-    <h2 id="nro_mesa" class="m-0"></h2>
-    <h3 id="direccion" class="m-0 small"></h3>
-    <p class="small m-0">FECHA DE RECEPCION:<br><b id="fechaR"></b> <span id="hora"></span></p>
-  </div>
+<body>
+  <img src="logo.png" width="100"><br>
+  <strong>EL RAPIDIN</strong><br>
+  Caldos - Chifa - Broaster<br>
+  San Martín de Pangoa
+  <h3 id="ticket"></h3>
+  <div id="mesa"></div>
+  <div>---</div>
+  <div>FECHA DE RECEPCIÓN:<br><span id="fecha"></span></div>
 
   <table>
     <thead>
-      <tr><th>Cant</th><th>Descripción</th><th class="right">Total</th></tr>
+      <tr>
+        <th>Cant</th>
+        <th>Descripción</th>
+        <th>Total</th>
+      </tr>
     </thead>
-    <tbody id="itemsBody"></tbody>
+    <tbody id="detalle"></tbody>
   </table>
 
-  <div style="margin-top:6px;">
-    <table style="width:100%">
-      <tr><td><b>EFECTIVO:</b></td><td class="right"><b id="efectivo"></b></td></tr>
-      <tr><td><b>TOTAL:</b></td><td class="right"><b id="total"></b></td></tr>
-      <tr><td><b>DEVUELTO:</b></td><td class="right"><b id="devueltas"></b></td></tr>
-    </table>
-  </div>
+  <table class="totales">
+    <tr><td>EFECTIVO:</td><td id="efectivo"></td></tr>
+    <tr><td>TOTAL:</td><td id="total"></td></tr>
+    <tr><td>DEVUELTO:</td><td id="devuelto"></td></tr>
+  </table>
 
-  <p class="small"><b id="estado"></b></p>
+  <p><strong>PAGADO</strong></p>
+  <p>
+    <strong>IMPORTANTE:</strong><br>
+    “Comprobante informativo – sin validez fiscal.”<br>
+    Contacto: 999999999<br>
+    Su preferencia nos motiva a seguir brindando lo mejor.<br>
+    <strong>El Rapidín</strong>
+  </p>
 
-  <div class="small">
-    <p class="m-0"><b>IMPORTANTE:</b></p>
-    <p class="m-0">“Comprobante informativo – sin validez fiscal.”<br>Contacto: 999999999<br>El Rapidín</p>
-  </div>
+  <script>
+    // Leer parámetros de la URL
+    const params = new URLSearchParams(window.location.search);
 
-  <pre id="debug"></pre>
-</div>
+    // Datos generales
+    document.getElementById("ticket").innerText = "TICKET: " + (params.get("boleta") || "");
+    document.getElementById("mesa").innerText = "Mesa " + (params.get("mesa") || "");
+    document.getElementById("fecha").innerText = params.get("fecha") || "";
 
-<script>
-function init() {
-  const params = new URLSearchParams(window.location.search || '');
+    // Arrays de datos
+    const cantidades = (params.get("cantidades") || "").split(",");
+    const servicios = (params.get("servicios") || "").split(",");
+    const p_totales = (params.get("p_total") || "").split(",");
 
-  // Helper: get param by several names
-  function getParam(...names) {
-    for (let n of names) {
-      if (params.has(n)) return params.get(n) || '';
-    }
-    return '';
-  }
-
-  // RAW param strings
-  const rawCant = getParam('cantidades','cantidad','cant') || '';
-  const rawDesc = getParam('servicios','servicio','descripcion') || '';
-  const rawPUnit = getParam('p_unit','punit','precio','precios') || '';
-
-  // other fields (flexible names)
-  const nroBoleta = getParam('boleta','pedido') || '---';
-  const nroMesa = getParam('mesa') || '---';
-  const direccion = decodeURIComponent(getParam('direccion') || '');
-  const fecha = getParam('fecha') || '';
-  const hora = getParam('fecha_entrega','hora') || '';
-
-  // efectivo/total/devueltas: try multiple names because in AppSheet a nombre de parámetro puede variar
-  const efectivoRaw = getParam('efectivo','descuento','efectivo_recibido','efectivoRecibido') || '0';
-  const totalRaw = getParam('total') || '0';
-  const devueltasRaw = getParam('subtotal_desc','devueltas','vuelto') || '0';
-  const estado = getParam('estado') || '';
-
-  // Debug mode
-  const debugOn = params.get('debug') === '1';
-
-  // smart split: try to find a separator that aligns arrays lengths
-  const seps = ['|',';','~','^',','];
-  function splitBySep(raw, sep){ if(raw==='') return []; return raw.split(sep).map(s => s.trim()); }
-
-  let sepFound = null;
-  for (let s of seps) {
-    const a = splitBySep(rawCant, s);
-    const b = splitBySep(rawDesc, s);
-    const c = splitBySep(rawPUnit, s);
-    if (a.length > 0 && a.length === b.length && a.length === c.length) { sepFound = s; break; }
-  }
-
-  let cantArr, descArr, pArr;
-  if (sepFound) {
-    cantArr = splitBySep(rawCant, sepFound);
-    descArr = splitBySep(rawDesc, sepFound);
-    pArr = splitBySep(rawPUnit, sepFound);
-  } else {
-    // fallback: numbers use comma, descriptions use pipe if present else comma
-    cantArr = rawCant ? rawCant.split(',').map(s=>s.trim()) : [];
-    pArr = rawPUnit ? rawPUnit.split(',').map(s=>s.trim()) : [];
-    if (rawDesc.indexOf('|') !== -1) descArr = rawDesc.split('|').map(s=>s.trim());
-    else descArr = rawDesc ? rawDesc.split(',').map(s=>s.trim()) : [];
-  }
-
-  // make all arrays same length (pad)
-  const maxLen = Math.max(cantArr.length, descArr.length, pArr.length, 0);
-  while (cantArr.length < maxLen) cantArr.push('0');
-  while (descArr.length < maxLen) descArr.push('');
-  while (pArr.length < maxLen) pArr.push('0');
-
-  // normalize number string (detect decimal separator and remove thousands)
-  function normalizeNumberString(s) {
-    if (s === null || typeof s === 'undefined') return '0';
-    s = s.toString().trim();
-    if (s === '') return '0';
-    // remove currency symbols and letters, keep digits, dots, commas, minus
-    s = s.replace(/[^\d\.,-]/g, '');
-    if (s === '') return '0';
-    // if both '.' and ',' exist: assume last one is decimal separator
-    if (s.indexOf('.') !== -1 && s.indexOf(',') !== -1) {
-      if (s.lastIndexOf('.') > s.lastIndexOf(',')) {
-        // dot is decimal, remove all commas
-        s = s.replace(/,/g,'');
-      } else {
-        // comma is decimal, remove dots and replace comma with dot
-        s = s.replace(/\./g,'').replace(/,/g,'.');
+    // Llenar la tabla de detalle
+    const tbody = document.getElementById("detalle");
+    for (let i = 0; i < servicios.length; i++) {
+      if (servicios[i].trim() !== "") {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${cantidades[i] || 0}</td>
+          <td>${servicios[i]}</td>
+          <td>${parseFloat(p_totales[i] || 0).toFixed(2)}</td>
+        `;
+        tbody.appendChild(row);
       }
-    } else if (s.indexOf(',') !== -1) {
-      // only comma -> treat as decimal
-      s = s.replace(/,/g,'.');
     }
-    return s;
-  }
 
-  // build result rows
-  const rows = [];
-  let computedTotal = 0;
-  for (let i=0;i<maxLen;i++) {
-    const rawCantItem = cantArr[i] || '0';
-    const rawPItem = pArr[i] || '0';
-    const rawDescItem = descArr[i] || '';
-
-    const cantNum = parseFloat(normalizeNumberString(rawCantItem)) || 0;
-    const priceNum = parseFloat(normalizeNumberString(rawPItem)) || 0;
-
-    const totalItem = cantNum * priceNum;
-    computedTotal += totalItem;
-
-    rows.push({
-      cantidad: cantNum,
-      descripcion: decodeURIComponent(rawDescItem || '').trim(),
-      precioNumeric: priceNum,
-      totalNumeric: totalItem,
-      precioFormatted: priceNum.toLocaleString('es-ES',{minimumFractionDigits:2}),
-      totalFormatted: totalItem.toLocaleString('es-ES',{minimumFractionDigits:2})
-    });
-  }
-
-  // parse overall totals passed by AppSheet
-  const efectivoNum = parseFloat(normalizeNumberString(efectivoRaw)) || 0;
-  const totalNum = parseFloat(normalizeNumberString(totalRaw)) || 0;
-  const devueltasNum = parseFloat(normalizeNumberString(devueltasRaw)) || 0;
-
-  // render items to table
-  const tbody = document.getElementById('itemsBody');
-  tbody.innerHTML = '';
-  rows.forEach(r => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="small">${r.cantidad}</td>
-                    <td class="small">${escapeHtml(r.descripcion)}</td>
-                    <td class="small right">${r.totalFormatted}</td>`;
-    tbody.appendChild(tr);
-  });
-
-  // fill header and totals
-  document.getElementById('nro_boleta').textContent = nroBoleta;
-  document.getElementById('nro_mesa').textContent = nroMesa;
-  document.getElementById('direccion').textContent = direccion;
-  document.getElementById('fechaR').textContent = fecha;
-  document.getElementById('hora').textContent = hora;
-
-  document.getElementById('efectivo').textContent = efectivoNum.toLocaleString('es-ES',{minimumFractionDigits:2});
-  document.getElementById('total').textContent = totalNum.toLocaleString('es-ES',{minimumFractionDigits:2});
-  document.getElementById('devueltas').textContent = devueltasNum.toLocaleString('es-ES',{minimumFractionDigits:2});
-  document.getElementById('estado').textContent = estado;
-
-  // debug
-  if (debugOn) {
-    const dbg = document.getElementById('debug');
-    dbg.style.display = 'block';
-    dbg.textContent =
-`RAW parámetros:
-cantidades = ${rawCant}
-servicios   = ${rawDesc}
-p_unit      = ${rawPUnit}
-
-Separator detected (first match): ${sepFound || 'no se encontró coincidencia exacta; usando heurística'}
-
-Arrays (post-split):
-cantArr  = ${JSON.stringify(cantArr)}
-descArr  = ${JSON.stringify(descArr)}
-pArr     = ${JSON.stringify(pArr)}
-
-Filas parseadas (primeras 10):
-${rows.slice(0,10).map((r,i)=> `${i+1}. cant=${r.cantidad}, precio=${r.precioNumeric}, total=${r.totalNumeric}, desc="${r.descripcion}"`).join('\n')}
-
-Totals:
-total pasado = ${totalNum}
-total calculado (suma items) = ${computedTotal}
-efectivo pasado = ${efectivoNum}
-devuelto pasado = ${devueltasNum}
-`;
-  }
-
-  // open console message also
-  console.log('Boleta debug', {
-    rawCant, rawDesc, rawPUnit, sepFound, cantArr, descArr, pArr, rows,
-    totalNum, computedTotal, efectivoNum, devueltasNum
-  });
-
-  // small helper to escape html inside description
-  function escapeHtml(text) {
-    return text
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;')
-      .replace(/'/g,'&#039;');
-  }
-}
-</script>
-
+    // Totales
+    document.getElementById("efectivo").innerText = params.get("efectivo") || "0";
+    document.getElementById("total").innerText = params.get("total") || "0";
+    document.getElementById("devuelto").innerText = params.get("devuelto") || "0";
+  </script>
 </body>
 </html>
