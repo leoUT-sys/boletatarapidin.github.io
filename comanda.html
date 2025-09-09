@@ -1,51 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=60mm, initial-scale=1.0">
-  <title>Comanda</title>
-  <style>
-    body {
-      font-family: tahoma, Helvetica, sans-serif;
-      margin: 0;
-      font-size: 3mm;
-      text-align: center;
-    }
-    #thermal-pos {
-      max-width: 60mm;
-    }
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 2mm;
-    }
-    .table th, .table td {
-      padding: 1mm;
-    }
-    .table-header h2, .table td h2 {
-      margin: 0;
-      font-weight: bold;
-      font-size: 3mm;
-    }
-    .nro_boleta, .nro_mesa, .fecha_recepcion {
-      margin: 2mm 0;
-    }
-    .total-section {
-      margin-top: 2mm;
-      border-top: 1px dashed black;
-      padding-top: 2mm;
-    }
-    .total-section h2 {
-      font-weight: bold;
-      margin: 0;
-      font-size: 3mm;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=60mm, initial-scale=1.0">
+<title>Comanda</title>
+<style>
+  body {
+    font-family: tahoma, Helvetica, sans-serif;
+    margin: 0;
+    font-size: 3mm;
+    text-align: center;
+  }
+  #thermal-pos {
+    max-width: 60mm;
+  }
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2mm;
+  }
+  .table th, .table td {
+    text-align: left;
+    padding: 1mm;
+  }
+  .table-header h2, .table td h2 {
+    margin: 0;
+    font-weight: bold;
+  }
+  .nro_boleta, .nro_mesa, .fecha_recepcion {
+    margin: 2mm 0;
+  }
+  .totales {
+    width: 100%;
+    font-size: 3mm;
+    margin-top: 2mm;
+    border-top: 1px dashed black;
+  }
+  .totales td {
+    padding: 0.5mm 0;
+  }
+  .totales .label {
+    text-align: left;
+  }
+  .totales .valor {
+    text-align: right;
+  }
+  .comentario {
+    font-size: 2.5mm;
+    font-style: italic;
+  }
+</style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
 <script>
+  // Obtener parámetros de la URL
   const params = new URLSearchParams(window.location.search);
 
   function parseList(param) {
@@ -53,14 +63,20 @@
     return val ? val.split(",") : [];
   }
 
+  // Variables principales
   var nro_boleta = params.get("boleta") || "---";
   var nro_mesa = params.get("mesa") || "---";
+  var cliente = params.get("cliente") || "---";
   var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
   var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
 
+  // Listas
   const cantidades = parseList(params.get("cantidades"));
-  const servicios = parseList(params.get("servicios"));
-  const p_totales = parseList(params.get("p_totales")); // precios por producto
+  const productos = parseList(params.get("servicios"));
+  const comentarios = parseList(params.get("comentarios"));
+  const p_totales = parseList(params.get("p_totales"));
+
+  const total_general = params.get("total") || "0";
 </script>
 
 <div id="thermal-pos">
@@ -68,6 +84,7 @@
     <h2>COMANDA</h2>
     <p><b>Pedido:</b> <span id="nro_boleta_id"></span></p>
     <p><b>Mesa:</b> <span id="nro_mesa_id"></span></p>
+    <p><b>Cliente:</b> <span id="cliente_id"></span></p>
     <p><b>Fecha:</b> <span id="fechaR"></span> <b id="hora"></b></p>
   </div>
 
@@ -76,42 +93,46 @@
       <tr class="table-header">
         <th><h2>Cant</h2></th>
         <th><h2>Descripción</h2></th>
-        <th><h2>Total</h2></th>
+        <th><h2>Total (S/.)</h2></th>
       </tr>
     </tbody>
   </table>
 
-  <div class="total-section">
-    <h2>TOTAL GENERAL: <span id="totalGeneral"></span></h2>
-  </div>
+  <table class="totales">
+    <tbody>
+      <tr>
+        <td class="label">TOTAL GENERAL:</td>
+        <td class="valor" id="total_general"></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <script>
-  // Insertar datos de pedido, mesa y fecha
+  // Insertar datos
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
+  document.getElementById("cliente_id").textContent = cliente;
   document.getElementById("fechaR").textContent = fecha;
   document.getElementById("hora").textContent = fecha_entrega;
+  document.getElementById("total_general").textContent = Number(total_general).toFixed(2);
 
   // Insertar productos
   const tablaBody = document.getElementById("tablaBody");
-  const precios = p_totales.map(p => parseFloat(p) || 0);
-  
-  servicios.forEach((serv, i) => {
-    if (serv.trim() !== "") {
+  productos.forEach((prod, i) => {
+    if (prod.trim() !== "") {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td><h2>${cantidades[i] || 0}</h2></td>
-        <td><h2>${serv}</h2></td>
-        <td><h2>S/. ${precios[i].toFixed(2)}</h2></td>
+        <td>
+          <h2>${prod}</h2>
+          <div class="comentario">${comentarios[i] || ""}</div>
+        </td>
+        <td><h2>${Number(p_totales[i] || 0).toFixed(2)}</h2></td>
       `;
       tablaBody.appendChild(row);
     }
   });
-
-  // Calcular total general en soles
-  const totalGeneral = precios.reduce((a, b) => a + b, 0).toFixed(2);
-  document.getElementById("totalGeneral").textContent = `S/. ${totalGeneral}`;
 </script>
 
 </body>
