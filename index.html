@@ -36,6 +36,21 @@
     .policy {
       margin-top: 5mm;
     }
+    .totales {
+      width: 100%;
+      font-size: 2.5mm;  /* letra más pequeña */
+      border-top: 1px dashed black;
+      margin-top: 2mm;
+    }
+    .totales td {
+      padding: 0.5mm 0;
+    }
+    .totales .label {
+      text-align: left;
+    }
+    .totales .valor {
+      text-align: right;
+    }
   </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
@@ -64,19 +79,12 @@
   var total = parseFloat(params.get("total") || 0);
   var descuento = parseFloat(params.get("descuento") || 0);
   var devueltas = parseFloat(params.get("subtotal_desc") || 0);
-  var estado = params.get("estado") || "--";
+  var estado = params.get("estado") || "--"; // aquí viene EFECTIVO, YAPE, PLIN
 
   // Listas de AppSheet
   const cantidades = parseList(params.get("cantidades"));
   const servicios = parseList(params.get("servicios"));
-  const p_unit = parseList(params.get("p_unit"));
-
-  // Calcular precios totales por plato (cantidad * precio unitario)
-  const p_totales = cantidades.map((c, i) => {
-    const cant = parseFloat(c || 0);
-    const unit = parseFloat(p_unit[i] || 0);
-    return (cant * unit).toFixed(2);
-  });
+  const p_unit = parseList(params.get("p_unit")); // aquí ya viene Precio total por fila
 </script>
 
 <div id="thermal-pos">
@@ -116,44 +124,26 @@
     </tbody>
   </table>
 
-  <style>
-  .totales {
-    width: 100%;
-    font-size: 2.5mm;  /* letra más pequeña */
-    border-top: 1px dashed black;
-    margin-top: 2mm;
-  }
-  .totales td {
-    padding: 0.5mm 0;
-  }
-  .totales .label {
-    text-align: left;
-  }
-  .totales .valor {
-    text-align: right;
-  }
-</style>
-
-<table class="totales">
-  <tbody>
-    <tr>
-      <td class="label">TOTAL A PAGAR:</td>
-      <td class="valor" id="total"></td>
-    </tr>
-    <tr>
-      <td class="label">CANCELA CON:</td>
-      <td class="valor" id="efectivo"></td>
-    </tr>
-    <tr>
-      <td class="label">VUELTO:</td>
-      <td class="valor" id="devueltas"></td>
-    </tr>
-  </tbody>
-</table>
-
-  <p class="saldo-text">
-    <b><span class="estado-deuda" id="estado"></span></b>
-  </p>
+  <table class="totales">
+    <tbody>
+      <tr>
+        <td class="label">TOTAL A PAGAR:</td>
+        <td class="valor" id="total"></td>
+      </tr>
+      <tr>
+        <td class="label">CANCELA CON:</td>
+        <td class="valor" id="efectivo"></td>
+      </tr>
+      <tr>
+        <td class="label">VUELTO:</td>
+        <td class="valor" id="devueltas"></td>
+      </tr>
+      <tr>
+        <td class="label">FORMA DE PAGO:</td>
+        <td class="valor" id="estado"></td>
+      </tr>
+    </tbody>
+  </table>
 
   <div class="policy">
     <p><b>IMPORTANTE:</b></p>
@@ -188,7 +178,7 @@
       row.innerHTML = `
         <td>${cantidades[i] || 0}</td>
         <td>${serv}</td>
-        <td>${p_totales[i]}</td>
+        <td>${Number(p_unit[i] || 0).toFixed(2)}</td>
       `;
       tablaBody.appendChild(row);
     }
@@ -197,5 +187,3 @@
 
 </body>
 </html>
-
-
