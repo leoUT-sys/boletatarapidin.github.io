@@ -60,8 +60,7 @@
 
   const cantidades = parseList(params.get("cantidades"));
   const servicios = parseList(params.get("servicios"));
-  const p_totales = parseList(params.get("p_totales")); // precios totales por producto
-  var total = params.get("total") || "0.00"; // total general
+  const p_totales = parseList(params.get("p_totales")); // precios por producto
 </script>
 
 <div id="thermal-pos">
@@ -88,24 +87,31 @@
 </div>
 
 <script>
+  // Insertar datos de pedido, mesa y fecha
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("fechaR").textContent = fecha;
   document.getElementById("hora").textContent = fecha_entrega;
-  document.getElementById("totalGeneral").textContent = total;
 
+  // Insertar productos
   const tablaBody = document.getElementById("tablaBody");
+  const precios = p_totales.map(p => parseFloat(p) || 0);
+  
   servicios.forEach((serv, i) => {
     if (serv.trim() !== "") {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td><h2>${cantidades[i] || 0}</h2></td>
         <td><h2>${serv}</h2></td>
-        <td><h2>${p_totales[i] || "0.00"}</h2></td>
+        <td><h2>S/. ${precios[i].toFixed(2)}</h2></td>
       `;
       tablaBody.appendChild(row);
     }
   });
+
+  // Calcular total general en soles
+  const totalGeneral = precios.reduce((a, b) => a + b, 0).toFixed(2);
+  document.getElementById("totalGeneral").textContent = `S/. ${totalGeneral}`;
 </script>
 
 </body>
