@@ -116,15 +116,33 @@
     </tbody>
   </table>
 
-  <table class="totales">
+  <style>
+  .totales {
+    width: 100%;
+    font-size: 2.5mm;  /* letra más pequeña */
+    border-top: 1px dashed black;
+    margin-top: 2mm;
+  }
+  .totales td {
+    padding: 0.5mm 0;
+  }
+  .totales .label {
+    text-align: left;
+  }
+  .totales .valor {
+    text-align: right;
+  }
+</style>
+
+<table class="totales">
   <tbody>
     <tr>
-      <td class="label">EFECTIVO:</td>
-      <td class="valor" id="efectivo"></td>
+      <td class="label">TOTAL A PAGAR:</td>
+      <td class="valor" id="total"></td>
     </tr>
     <tr>
-      <td class="label">TOTAL:</td>
-      <td class="valor" id="total"></td>
+      <td class="label">CANCELA CON:</td>
+      <td class="valor" id="efectivo"></td>
     </tr>
     <tr>
       <td class="label">VUELTO:</td>
@@ -179,4 +197,5 @@
 
 </body>
 </html>
+
 
