@@ -30,7 +30,7 @@
       padding: 0;
       line-height: 1.2;
     }
-    .nro_boleta, .nro_mesa, .direccion, .fecha_recepcion {
+    .nro_boleta, .nro_mesa, .direccion, .fecha_recepcion, .cliente {
       margin: 0;
     }
     .policy {
@@ -70,6 +70,7 @@
   // Variables principales
   var nro_boleta = params.get("boleta") || "---";
   var nro_mesa = params.get("mesa") || "---";
+  var cliente = params.get("cliente") || "---";
   var direc = params.get("direccion") || "---";
   var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
   var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
@@ -104,6 +105,7 @@
     <b>TICKET:</b>
     <h1 class="nro_boleta" id="nro_boleta_id"></h1>
     <h1 class="nro_mesa" id="nro_mesa_id"></h1>
+    <h2 class="cliente">Cliente: <span id="cliente_id"></span></h2>
     <h3 class="direccion" id="nro_direccion_id"></h3>
   </div>
 
@@ -160,6 +162,7 @@
   // Insertar valores simples
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
+  document.getElementById("cliente_id").textContent = cliente;
   document.getElementById("nro_direccion_id").textContent = direc;
   document.getElementById("fechaR").textContent = fecha;
   document.getElementById("hora").textContent = fecha_entrega;
