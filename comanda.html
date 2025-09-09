@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=60mm, initial-scale=1.0">
+  <title>Comanda</title>
+  <style>
+    body {
+      font-family: tahoma, Helvetica, sans-serif;
+      margin: 0;
+      font-size: 3mm;
+      text-align: center;
+    }
+    #thermal-pos {
+      max-width: 60mm;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2mm;
+    }
+    .table th, .table td {
+      text-align: left;
+      padding: 1mm;
+    }
+    .table-header h2 {
+      margin: 0;
+    }
+    .nro_boleta, .nro_mesa, .fecha_recepcion {
+      margin: 2mm 0;
+    }
+  </style>
+</head>
+<body onload="window.print()" onfocus="window.close()">
+
+<script>
+  // Obtener parámetros de la URL
+  const params = new URLSearchParams(window.location.search);
+
+  function parseList(param) {
+    let val = (param || "").replace(/[{}]/g, "").replace(/\s+/g, "");
+    return val ? val.split(",") : [];
+  }
+
+  // Variables principales
+  var nro_boleta = params.get("boleta") || "---";
+  var nro_mesa = params.get("mesa") || "---";
+  var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
+  var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
+
+  // Listas de AppSheet
+  const cantidades = parseList(params.get("cantidades"));
+  const servicios = parseList(params.get("servicios"));
+</script>
+
+<div id="thermal-pos">
+  <div class="label">
+    <h2>COMANDA</h2>
+    <p><b>Pedido:</b> <span id="nro_boleta_id"></span></p>
+    <p><b>Mesa:</b> <span id="nro_mesa_id"></span></p>
+    <p><b>Fecha:</b> <span id="fechaR"></span> <b id="hora"></b></p>
+  </div>
+
+  <table class="table">
+    <tbody id="tablaBody">
+      <tr class="table-header">
+        <th><h2>Cant</h2></th>
+        <th><h2>Descripción</h2></th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Insertar valores
+  document.getElementById("nro_boleta_id").textContent = nro_boleta;
+  document.getElementById("nro_mesa_id").textContent = nro_mesa;
+  document.getElementById("fechaR").textContent = fecha;
+  document.getElementById("hora").textContent = fecha_entrega;
+
+  // Insertar productos
+  const tablaBody = document.getElementById("tablaBody");
+  servicios.forEach((serv, i) => {
+    if (serv.trim() !== "") {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${cantidades[i] || 0}</td>
+        <td>${serv}</td>
+      `;
+      tablaBody.appendChild(row);
+    }
+  });
+</script>
+
+</body>
+</html>
