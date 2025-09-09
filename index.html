@@ -2,84 +2,180 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=60mm, initial-scale=1.0">
+  <title>Ticket de Compra</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    td, th { padding: 4px; font-size: 14px; text-align: center; }
-    th { border-bottom: 1px solid #000; }
-    .totales { margin-top: 15px; text-align: left; }
-    .totales td { padding: 3px; font-size: 16px; font-weight: bold; }
+    body {
+      font-family: tahoma, Helvetica, sans-serif;
+      margin: 0;
+      font-size: 3mm;
+      text-align: center;
+    }
+    #thermal-pos {
+      max-width: 60mm;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table th, .table td {
+      text-align: left;
+      padding: 1mm;
+    }
+    .table-header h2 {
+      margin: 0;
+    }
+    .table-footer td {
+      padding: 0;
+      line-height: 1.2;
+    }
+    .nro_boleta, .nro_mesa, .direccion, .fecha_recepcion {
+      margin: 0;
+    }
+    .policy {
+      margin-top: 5mm;
+    }
   </style>
 </head>
-<body>
-  <img src="logo.png" width="100"><br>
-  <strong>EL RAPIDIN</strong><br>
-  Caldos - Chifa - Broaster<br>
-  San Martín de Pangoa
-  <h3 id="ticket"></h3>
-  <div id="mesa"></div>
-  <div>---</div>
-  <div>FECHA DE RECEPCIÓN:<br><span id="fecha"></span></div>
+<body onload="window.print()" onfocus="window.close()">
 
-  <table>
-    <thead>
-      <tr>
-        <th>Cant</th>
-        <th>Descripción</th>
-        <th>Total</th>
+<script>
+  // Obtener parámetros de la URL
+  const params = new URLSearchParams(window.location.search);
+
+  // Función para limpiar listas de AppSheet "{10, 12, 15}" → ["10","12","15"]
+  function parseList(param) {
+    let val = (param || "")
+                .replace(/[{}]/g, "") // quita llaves
+                .replace(/\s+/g, ""); // quita espacios
+    return val ? val.split(",") : [];
+  }
+
+  // Variables principales
+  var nro_boleta = params.get("boleta") || "---";
+  var nro_mesa = params.get("mesa") || "---";
+  var direc = params.get("direccion") || "---";
+  var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
+  var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
+  var domi = parseFloat(params.get("domi") || 0);
+  var propina = parseFloat(params.get("propina") || 0);
+
+  var total = parseFloat(params.get("total") || 0);
+  var descuento = parseFloat(params.get("descuento") || 0);
+  var devueltas = parseFloat(params.get("subtotal_desc") || 0);
+  var estado = params.get("estado") || "--";
+
+  // Listas de AppSheet
+  const cantidades = parseList(params.get("cantidades"));
+  const servicios = parseList(params.get("servicios"));
+  const p_unit = parseList(params.get("p_unit"));
+
+  // Calcular precios totales por plato (cantidad * precio unitario)
+  const p_totales = cantidades.map((c, i) => {
+    const cant = parseFloat(c || 0);
+    const unit = parseFloat(p_unit[i] || 0);
+    return (cant * unit).toFixed(2);
+  });
+</script>
+
+<div id="thermal-pos">
+  <div class="label">
+    <div class="logo" style="text-align:center;">
+      <img src="logo.png" alt="Mi Logo" style="width:120px; height:auto;">
+    </div>
+    <br/>
+    <h3>
+      EL RAPIDIN <br>
+      Caldos - Chifa - Broaster <br>
+      San Martin de Pangoa
+    </h3>
+  </div>
+
+  <div class="label">
+    <b>TICKET:</b>
+    <h1 class="nro_boleta" id="nro_boleta_id"></h1>
+    <h1 class="nro_mesa" id="nro_mesa_id"></h1>
+    <h3 class="direccion" id="nro_direccion_id"></h3>
+  </div>
+
+  <div class="label">
+    <p class="fecha_recepcion">
+      FECHA DE RECEPCION: <br>
+      <b id="fechaR"></b> <b id="hora"></b>
+    </p>
+  </div>
+
+  <table class="table">
+    <tbody id="tablaBody">
+      <tr class="table-header">
+        <th><h2>Cant</h2></th>
+        <th><h2>Descripción</h2></th>
+        <th><h2>Total</h2></th>
       </tr>
-    </thead>
-    <tbody id="detalle"></tbody>
+    </tbody>
   </table>
 
-  <table class="totales">
-    <tr><td>EFECTIVO:</td><td id="efectivo"></td></tr>
-    <tr><td>TOTAL:</td><td id="total"></td></tr>
-    <tr><td>DEVUELTO:</td><td id="devuelto"></td></tr>
+  <table class="table">
+    <tbody>
+      <tr class="table-footer">
+        <td colspan="2"><h2>EFECTIVO:</h2></td>
+        <td><h2 id="efectivo"></h2></td>
+      </tr>
+      <tr class="table-footer">
+        <td colspan="2"><h2>TOTAL:</h2></td>
+        <td><h2 id="total"></h2></td>
+      </tr>
+      <tr class="table-footer">
+        <td colspan="2"><h2>DEVUELTO:</h2></td>
+        <td><h2 id="devueltas"></h2></td>
+      </tr>
+    </tbody>
   </table>
 
-  <p><strong>PAGADO</strong></p>
-  <p>
-    <strong>IMPORTANTE:</strong><br>
-    “Comprobante informativo – sin validez fiscal.”<br>
-    Contacto: 999999999<br>
-    Su preferencia nos motiva a seguir brindando lo mejor.<br>
-    <strong>El Rapidín</strong>
+  <p class="saldo-text">
+    <b><span class="estado-deuda" id="estado"></span></b>
   </p>
 
-  <script>
-    // Leer parámetros de la URL
-    const params = new URLSearchParams(window.location.search);
+  <div class="policy">
+    <p><b>IMPORTANTE:</b></p>
+    <p>
+      “Comprobante informativo – sin validez fiscal.” <br/>
+      Contacto: 999999999 <br/>
+      Su preferencia nos motiva a seguir brindando lo mejor. <br>
+      <b>El Rapidín</b>
+    </p>
+  </div>
+</div>
 
-    // Datos generales
-    document.getElementById("ticket").innerText = "TICKET: " + (params.get("boleta") || "");
-    document.getElementById("mesa").innerText = "Mesa " + (params.get("mesa") || "");
-    document.getElementById("fecha").innerText = params.get("fecha") || "";
+<script>
+  // Insertar valores simples
+  document.getElementById("nro_boleta_id").textContent = nro_boleta;
+  document.getElementById("nro_mesa_id").textContent = nro_mesa;
+  document.getElementById("nro_direccion_id").textContent = direc;
+  document.getElementById("fechaR").textContent = fecha;
+  document.getElementById("hora").textContent = fecha_entrega;
 
-    // Arrays de datos
-    const cantidades = (params.get("cantidades") || "").split(",");
-    const servicios = (params.get("servicios") || "").split(",");
-    const p_totales = (params.get("p_total") || "").split(",");
+  // Insertar totales
+  document.getElementById("total").textContent = total.toFixed(2);
+  document.getElementById("efectivo").textContent = descuento.toFixed(2);
+  document.getElementById("devueltas").textContent = devueltas.toFixed(2);
+  document.getElementById("estado").textContent = estado;
 
-    // Llenar la tabla de detalle
-    const tbody = document.getElementById("detalle");
-    for (let i = 0; i < servicios.length; i++) {
-      if (servicios[i].trim() !== "") {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${cantidades[i] || 0}</td>
-          <td>${servicios[i]}</td>
-          <td>${parseFloat(p_totales[i] || 0).toFixed(2)}</td>
-        `;
-        tbody.appendChild(row);
-      }
+  // Insertar filas de productos
+  const tablaBody = document.getElementById("tablaBody");
+  servicios.forEach((serv, i) => {
+    if (serv.trim() !== "") {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${cantidades[i] || 0}</td>
+        <td>${serv}</td>
+        <td>${p_totales[i]}</td>
+      `;
+      tablaBody.appendChild(row);
     }
+  });
+</script>
 
-    // Totales
-    document.getElementById("efectivo").innerText = params.get("efectivo") || "0";
-    document.getElementById("total").innerText = params.get("total") || "0";
-    document.getElementById("devuelto").innerText = params.get("devuelto") || "0";
-  </script>
 </body>
 </html>
