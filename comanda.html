@@ -124,7 +124,7 @@
         <td><h2>${cantidades[i] || 0}</h2></td>
         <td>
           <h2>${prod}</h2>
-          <div class="comentario">${comentarios[i] || ""}</div>
+         <div class="comentario">${comentarios[i] && comentarios[i].trim() !== "" ? comentarios[i] : "-"}</div>
         </td>
       `;
       tablaBody.appendChild(row);
@@ -134,3 +134,4 @@
 
 </body>
 </html>
+
