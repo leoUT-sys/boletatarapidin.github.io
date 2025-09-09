@@ -61,7 +61,7 @@
       // Datos de productos
       var cantidades = (params.get('cantidades') || "0").split(",");
       var descripciones = (params.get('servicios') || "No hay articulos").split(",");
-      var p_units = (params.get('p_unit') || "0").split(",");
+      var precio_unitario = (params.get('p_unit') || "0").split(",");
 
       // Limpiar y armar lista
       var result = [];
@@ -175,3 +175,4 @@
     </script>
   </body>
 </html>
+
