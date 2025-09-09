@@ -21,21 +21,31 @@
       margin-top: 2mm;
     }
     .table th, .table td {
-      text-align: left;
       padding: 1mm;
     }
-    .table-header h2 {
+    .table-header h2, .table td h2 {
       margin: 0;
+      font-weight: bold;
+      font-size: 3mm;
     }
     .nro_boleta, .nro_mesa, .fecha_recepcion {
       margin: 2mm 0;
+    }
+    .total-section {
+      margin-top: 2mm;
+      border-top: 1px dashed black;
+      padding-top: 2mm;
+    }
+    .total-section h2 {
+      font-weight: bold;
+      margin: 0;
+      font-size: 3mm;
     }
   </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
 <script>
-  // Obtener parámetros de la URL
   const params = new URLSearchParams(window.location.search);
 
   function parseList(param) {
@@ -43,15 +53,15 @@
     return val ? val.split(",") : [];
   }
 
-  // Variables principales
   var nro_boleta = params.get("boleta") || "---";
   var nro_mesa = params.get("mesa") || "---";
   var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
   var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
 
-  // Listas de AppSheet
   const cantidades = parseList(params.get("cantidades"));
   const servicios = parseList(params.get("servicios"));
+  const p_totales = parseList(params.get("p_totales")); // precios totales por producto
+  var total = params.get("total") || "0.00"; // total general
 </script>
 
 <div id="thermal-pos">
@@ -67,26 +77,31 @@
       <tr class="table-header">
         <th><h2>Cant</h2></th>
         <th><h2>Descripción</h2></th>
+        <th><h2>Total</h2></th>
       </tr>
     </tbody>
   </table>
+
+  <div class="total-section">
+    <h2>TOTAL GENERAL: <span id="totalGeneral"></span></h2>
+  </div>
 </div>
 
 <script>
-  // Insertar valores
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("fechaR").textContent = fecha;
   document.getElementById("hora").textContent = fecha_entrega;
+  document.getElementById("totalGeneral").textContent = total;
 
-  // Insertar productos
   const tablaBody = document.getElementById("tablaBody");
   servicios.forEach((serv, i) => {
     if (serv.trim() !== "") {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${cantidades[i] || 0}</td>
-        <td>${serv}</td>
+        <td><h2>${cantidades[i] || 0}</h2></td>
+        <td><h2>${serv}</h2></td>
+        <td><h2>${p_totales[i] || "0.00"}</h2></td>
       `;
       tablaBody.appendChild(row);
     }
