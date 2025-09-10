@@ -55,7 +55,6 @@
 <body onload="window.print()" onfocus="window.close()">
 
 <script>
-  // Obtener parámetros de la URL
   const params = new URLSearchParams(window.location.search);
 
   function parseList(param) {
@@ -63,14 +62,12 @@
     return val ? val.split(",") : [];
   }
 
-  // Variables principales
   var nro_boleta = params.get("boleta") || "---";
   var nro_mesa = params.get("mesa") || "---";
   var cliente = params.get("cliente") || "---";
   var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
   var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
 
-  // Listas
   const cantidades = parseList(params.get("cantidades"));
   const productos = parseList(params.get("servicios"));
   const comentarios = parseList(params.get("comentarios"));
@@ -82,16 +79,24 @@
   <div class="label">
     <h2>COMANDA</h2>
     <p><b>Pedido:</b> <span id="nro_boleta_id"></span></p>
-    <p><b></b> <span id="nro_mesa_id"></span></p>
+    <h1><span id="nro_mesa_id"></span></h1> <!-- Mesa en H1 -->
     <p><b>Cliente:</b> <span id="cliente_id"></span></p>
     <p><b>Fecha:</b> <span id="fechaR"></span> <b id="hora"></b></p>
   </div>
 
   <table class="table">
     <tbody id="tablaBody">
+      <!-- Línea arriba del encabezado -->
+      <tr>
+        <td colspan="2" style="border-top:1px dashed black;"></td>
+      </tr>
       <tr class="table-header">
         <th><h2>Cant</h2></th>
         <th><h2>Descripción</h2></th>
+      </tr>
+      <!-- Línea abajo del encabezado -->
+      <tr>
+        <td colspan="2" style="border-bottom:1px dashed black;"></td>
       </tr>
     </tbody>
   </table>
@@ -99,15 +104,14 @@
   <table class="totales">
     <tbody>
       <tr>
-        <td class="label">TOTAL GENERAL:</td>
-        <td class="valor" id="total_general"></td>
+        <td class="label"><h1>TOTAL GENERAL:</h1></td>
+        <td class="valor"><h1 id="total_general"></h1></td>
       </tr>
     </tbody>
   </table>
 </div>
 
 <script>
-  // Insertar encabezado
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
@@ -115,7 +119,6 @@
   document.getElementById("hora").textContent = fecha_entrega;
   document.getElementById("total_general").textContent = "S/ " + Number(total_general).toFixed(2);
 
-  // Insertar productos
   const tablaBody = document.getElementById("tablaBody");
   productos.forEach((prod, i) => {
     if (prod.trim() !== "") {
@@ -124,7 +127,7 @@
         <td><h2>${cantidades[i] || 0}</h2></td>
         <td>
           <h2>${prod}</h2>
-         <div class="comentario">${comentarios[i] && comentarios[i].trim() !== "" ? comentarios[i] : "-"}</div>
+          <div class="comentario">${comentarios[i] && comentarios[i].trim() !== "" ? comentarios[i] : "-"}</div>
         </td>
       `;
       tablaBody.appendChild(row);
@@ -134,5 +137,7 @@
 
 </body>
 </html>
+
+
 
 
