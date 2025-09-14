@@ -2,81 +2,76 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket 58mm</title>
+  <title>Ticket A4</title>
   <style>
+    @page {
+      size: A4 portrait;
+      margin: 15mm;
+    }
     body {
-      font-family: "Courier New", monospace;
-      font-size: 12pt;
+      font-family: "Courier New", Consolas, monospace;
+      font-size: 20pt;
       margin: 0;
-      padding: 0;
-      width: 58mm;
       color: black;
     }
     .ticket {
       width: 100%;
-      padding: 4px;
       box-sizing: border-box;
     }
-    .center {
-      text-align: center;
-    }
-    .right {
-      text-align: right;
-    }
+    .center { text-align: center; }
+    .right { text-align: right; }
     h1 {
-      font-size: 16pt;
-      margin: 2px 0;
+      font-size: 40pt;
+      margin: 5mm 0 2mm 0;
       text-align: center;
     }
     h2 {
-      font-size: 12pt;
-      margin: 2px 0;
+      font-size: 28pt;
+      margin: 0;
       text-align: center;
     }
     h3 {
-      font-size: 11pt;
-      margin: 2px 0;
+      font-size: 24pt;
+      margin: 2mm 0 8mm 0;
       text-align: center;
     }
     .data {
-      font-size: 11pt;
-      margin: 2px 0;
+      margin: 4mm 0;
+      font-size: 22pt;
     }
-    .bold {
-      font-weight: bold;
-    }
+    .bold { font-weight: bold; }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 4px;
+      margin-top: 8mm;
     }
     th, td {
-      font-size: 11pt;
-      padding: 2px 0;
+      font-size: 22pt;
+      padding: 6px 0;
     }
     th {
-      border-bottom: 1px solid black;
+      border-bottom: 2px solid black;
       text-align: center;
     }
     .totales {
       width: 100%;
-      font-size: 11pt;
-      border-top: 1px solid black;
-      margin-top: 6px;
+      font-size: 24pt;
+      border-top: 2px solid black;
+      margin-top: 10mm;
       font-weight: bold;
     }
     .totales td {
-      padding: 3px 0;
+      padding: 6px 0;
     }
     .total-grande {
-      font-size: 13pt;
+      font-size: 30pt;
       font-weight: bold;
     }
     .policy {
-      margin-top: 8px;
+      margin-top: 15mm;
       text-align: center;
-      font-size: 10pt;
-      line-height: 1.4;
+      font-size: 18pt;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -91,7 +86,7 @@
   <p class="data"><b>Cliente:</b> <span id="cliente_id"></span></p>
   <p class="data bold" id="nro_mesa_id"></p>
   <p class="data" id="nro_direccion_id"></p>
-  <p class="data"><b>FECHA/HORA:</b> <span id="fechaR"></span></p>
+  <p class="data"><b>FECHA / HORA:</b> <span id="fechaR"></span></p>
 
   <table>
     <thead>
