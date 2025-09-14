@@ -2,23 +2,21 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket 58mm</title>
+  <title>Ticket A4</title>
   <style>
     @page {
-      size: 58mm auto; /* ancho de ticket */
-      margin: 0;
+      size: A4 portrait;
+      margin: 15mm;
     }
     body {
-      font-family: "Courier New", Consolas, monospace; /* fuente estilo ticket */
-      font-size: 20pt;  /* 🔥 texto más grande */
+      font-family: "Courier New", Consolas, monospace;
+      font-size: 18pt; /* 🔥 texto general más grande */
       margin: 0;
       color: black;
-      text-align: left;
     }
     .ticket {
-      width: 58mm;
-      max-width: 58mm;
-      padding: 2mm;
+      width: 100%;
+      padding: 5mm;
       box-sizing: border-box;
     }
     .center {
@@ -27,49 +25,52 @@
     .right {
       text-align: right;
     }
-    h3 {
-      font-size: 22pt;  /* título más grande */
-      margin: 3mm 0;
+    h1, h2, h3 {
+      font-size: 24pt;  /* 🔥 títulos grandes */
+      margin: 8mm 0 4mm 0;
       text-align: center;
     }
     .data {
-      margin: 2mm 0;
-      font-size: 20pt;
+      margin: 4mm 0;
+      font-size: 20pt; /* un poquito más grande que el general */
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 3mm;
+      margin-top: 6mm;
     }
     th, td {
-      font-size: 20pt; /* filas más grandes */
-      padding: 2px 0;
+      font-size: 20pt; /* 🔥 filas más grandes */
+      padding: 4px 0;
     }
     th {
-      border-bottom: 1px dashed black;
+      border-bottom: 2px solid black;
       text-align: center;
     }
     .totales {
       width: 100%;
-      font-size: 20pt;
-      border-top: 1px dashed black;
-      margin-top: 4mm;
+      font-size: 22pt; /* 🔥 totales resaltados */
+      border-top: 2px solid black;
+      margin-top: 8mm;
+      font-weight: bold;
     }
     .totales td {
-      padding: 2mm 0;
+      padding: 4mm 0;
     }
     .policy {
-      margin-top: 6mm;
+      margin-top: 12mm;
       text-align: center;
-      font-size: 16pt; /* texto chico más grande también */
-      line-height: 1.4;
+      font-size: 18pt;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
 <div class="ticket">
-  <h3>EL RAPIDIN<br>Caldos - Chifa - Broaster<br>San Martín de Pangoa</h3>
+  <h1>EL RAPIDIN</h1>
+  <h2>Caldos - Chifa - Broaster</h2>
+  <h3>San Martín de Pangoa</h3>
 
   <p class="data"><b>TICKET:</b> <span id="nro_boleta_id"></span></p>
   <p class="data"><b>MESA:</b> <span id="nro_mesa_id"></span></p>
