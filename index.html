@@ -6,65 +6,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ticket de Compra en A4</title>
   <style>
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
     body {
       font-family: Tahoma, Helvetica, sans-serif;
       margin: 0;
-      font-size: 12px;
-    }
-    .page {
-      width: 210mm;   /* Ancho hoja A4 */
-      height: 297mm;  /* Alto hoja A4 */
-      margin: 0 auto;
-      position: relative;
-    }
-    #thermal-pos {
-      width: 58mm;   /* Ancho del ticket */
-      padding: 2mm;
-      box-sizing: border-box;
-    }
-    .logo img {
-      width: 100%;
-      max-width: 58mm;
-      height: auto;
-    }
-    h3, h2, h1 {
-      margin: 2px 0;
-      font-size: 12px;
+      font-size: 18pt;   /* Texto general más grande */
       text-align: center;
     }
+    .page {
+      width: 100%;
+      max-width: 80mm;   /* simulamos ancho de ticket dentro del A4 */
+      margin: 0 auto;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 8mm;
+    }
+    .logo img {
+      width: 40mm;   /* Mantener tamaño del logo */
+      height: auto;
+    }
+    h3 {
+      font-size: 20pt;
+      margin: 4mm 0;
+    }
     .nro_boleta, .nro_mesa {
-      font-size: 14px;
+      font-size: 20pt;
+      margin: 3mm 0;
       text-align: left;
-      margin: 2px 0;
     }
     .cliente, .direccion, .fecha_recepcion {
-      font-size: 12px;
-      margin: 2px 0;
+      font-size: 18pt;
+      margin: 3mm 0;
       text-align: left;
-      word-wrap: break-word;
     }
     .table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 5px;
+      margin-top: 5mm;
     }
     .table th, .table td {
+      font-size: 18pt;  /* Texto más grande en productos */
+      padding: 4px;
       text-align: left;
-      padding: 2px;
-      font-size: 12px;
-      word-wrap: break-word;
     }
     .table th {
-      border-bottom: 1px dashed black;
+      border-bottom: 2px dashed black;
+      text-align: center;
     }
     .totales {
       width: 100%;
-      font-size: 12px;
-      border-top: 1px dashed black;
-      margin-top: 5px;
+      font-size: 20pt;
+      border-top: 2px dashed black;
+      margin-top: 5mm;
     }
     .totales td {
-      padding: 2px 0;
+      padding: 3mm 0;
     }
     .totales .label {
       text-align: left;
@@ -73,83 +73,67 @@
       text-align: right;
     }
     .policy {
-      margin-top: 5px;
+      margin-top: 10mm;
       text-align: center;
     }
     .small-text {
-      font-size: 10px;
-      line-height: 1.2;
-    }
-
-    /* Configuración para impresión A4 */
-    @page {
-      size: A4;
-      margin: 10mm;
+      font-size: 14pt;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
 <div class="page">
-  <div id="thermal-pos">
-    <div class="label" style="text-align:center;">
-      <div class="logo">
-        <img src="logo.png" alt="Mi Logo">
-      </div>
-      <h3>EL RAPIDIN<br> Caldos - Chifa - Broaster <br> San Martin de Pangoa</h3>
-    </div>
+  <div class="logo">
+    <img src="logo.png" alt="Mi Logo">
+  </div>
 
-    <div class="label">
-      <p class="nro_boleta"><b>TICKET:</b> <span id="nro_boleta_id"></span></p>
-      <p class="nro_mesa"><b>MESA:</b> <span id="nro_mesa_id"></span></p>
-      <p class="cliente"><b>Cliente:</b> <span id="cliente_id"></span></p>
-      <p class="direccion" id="nro_direccion_id"></p>
-    </div>
+  <h3>EL RAPIDIN<br> Caldos - Chifa - Broaster <br> San Martín de Pangoa</h3>
 
-    <div class="label">
-      <p class="fecha_recepcion">
-        <b>FECHA:</b> <span id="fechaR"></span> <span id="hora"></span>
-      </p>
-    </div>
+  <p class="nro_boleta"><b>TICKET:</b> <span id="nro_boleta_id"></span></p>
+  <p class="nro_mesa"><b>MESA:</b> <span id="nro_mesa_id"></span></p>
+  <p class="cliente"><b>Cliente:</b> <span id="cliente_id"></span></p>
+  <p class="direccion" id="nro_direccion_id"></p>
+  <p class="fecha_recepcion"><b>FECHA:</b> <span id="fechaR"></span> <span id="hora"></span></p>
 
-    <table class="table">
-      <thead>
-        <tr class="table-header">
-          <th>Cant</th>
-          <th>Descripción</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody id="tablaBody"></tbody>
-    </table>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Cant</th>
+        <th>Descripción</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="tablaBody"></tbody>
+  </table>
 
-    <table class="totales">
-      <tbody>
-        <tr>
-          <td class="label">TOTAL A PAGAR:</td>
-          <td class="valor" id="total"></td>
-        </tr>
-        <tr>
-          <td class="label">CANCELA CON:</td>
-          <td class="valor" id="efectivo"></td>
-        </tr>
-        <tr>
-          <td class="label">VUELTO:</td>
-          <td class="valor" id="devueltas"></td>
-        </tr>
-        <tr>
-          <td class="label">FORMA DE PAGO:</td>
-          <td class="valor" id="estado"></td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="totales">
+    <tbody>
+      <tr>
+        <td class="label">TOTAL A PAGAR:</td>
+        <td class="valor" id="total"></td>
+      </tr>
+      <tr>
+        <td class="label">CANCELA CON:</td>
+        <td class="valor" id="efectivo"></td>
+      </tr>
+      <tr>
+        <td class="label">VUELTO:</td>
+        <td class="valor" id="devueltas"></td>
+      </tr>
+      <tr>
+        <td class="label">FORMA DE PAGO:</td>
+        <td class="valor" id="estado"></td>
+      </tr>
+    </tbody>
+  </table>
 
-    <div class="policy">
-      <p class="small-text">
-        * Comprobante informativo – sin validez fiscal *<br/>
-        ¡Gracias por su preferencia! 🙌
-      </p>
-    </div>
+  <div class="policy">
+    <p class="small-text">
+      * Comprobante informativo – sin validez fiscal *<br/>
+      ¡Gracias por su preferencia! 🙌
+    </p>
   </div>
 </div>
 
@@ -163,32 +147,31 @@
     return val ? val.split(",") : [];
   }
 
-  var nro_boleta = params.get("boleta") || "---";
-  var nro_mesa = params.get("mesa") || "---";
-  var cliente = params.get("cliente") || "---";
-  var direc = params.get("direccion") || "---";
-  var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
-  var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
+  var nro_boleta = params.get("boleta") || "285826-P-002";
+  var nro_mesa = params.get("mesa") || "Mesa 8";
+  var cliente = params.get("cliente") || "Cliente Final";
+  var direc = params.get("direccion") || "San Martín de Pangoa";
+  var fecha = params.get("fecha") || "09/11/2025";
+  var hora = params.get("fecha_entrega") || "18:40:30";
 
-  var total = parseFloat(params.get("total") || 0);
-  var descuento = parseFloat(params.get("descuento") || 0);
-  var devueltas = parseFloat(params.get("subtotal_desc") || 0);
-  var estado = params.get("estado") || "--";
+  var total = parseFloat(params.get("total") || 17);
+  var efectivo = parseFloat(params.get("pago") || 50);
+  var vuelto = parseFloat(params.get("vuelto") || 33);
+  var estado = params.get("estado") || "EFECTIVO";
 
-  const cantidades = parseList(params.get("cantidades"));
-  const servicios = parseList(params.get("servicios"));
-  const p_unit = parseList(params.get("p_unit"));
+  const cantidades = parseList(params.get("cantidades")) || ["1","1"];
+  const servicios = parseList(params.get("servicios")) || ["Aeropuerto de pollo","Chaufa de pollo"];
+  const precios = parseList(params.get("p_unit")) || ["9.00","8.00"];
 
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
   document.getElementById("nro_direccion_id").textContent = direc;
   document.getElementById("fechaR").textContent = fecha;
-  document.getElementById("hora").textContent = fecha_entrega;
-
+  document.getElementById("hora").textContent = hora;
   document.getElementById("total").textContent = total.toFixed(2);
-  document.getElementById("efectivo").textContent = descuento.toFixed(2);
-  document.getElementById("devueltas").textContent = devueltas.toFixed(2);
+  document.getElementById("efectivo").textContent = efectivo.toFixed(2);
+  document.getElementById("devueltas").textContent = vuelto.toFixed(2);
   document.getElementById("estado").textContent = estado;
 
   const tablaBody = document.getElementById("tablaBody");
@@ -198,7 +181,7 @@
       row.innerHTML = `
         <td>${cantidades[i] || 0}</td>
         <td>${serv}</td>
-        <td>${Number(p_unit[i] || 0).toFixed(2)}</td>
+        <td style="text-align:right;">${Number(precios[i] || 0).toFixed(2)}</td>
       `;
       tablaBody.appendChild(row);
     }
