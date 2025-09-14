@@ -2,52 +2,182 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket</title>
+  <title>Ticket A4</title>
   <style>
-    @page { size: A4 portrait; margin: 20mm; }
+    @page { size: A4 portrait; margin: 15mm; }
     body {
-      font-family: "Lucida Console", monospace;
-      font-size: 36pt;
-      text-align: center;
+      font-family: "Lucida Console", "Courier New", monospace;
+      font-size: 38pt; /* 🔥 Fuente base muy grande */
       margin: 0;
       padding: 0;
+      color: black;
+      text-align: center;
     }
     .ticket {
       width: 100%;
-      max-width: 700px;
+      max-width: 750px;
       margin: auto;
     }
-    h1 { font-size: 48pt; margin: 10px 0; }
-    h2 { font-size: 42pt; margin: 10px 0; }
-    h3 { font-size: 38pt; margin: 10px 0; }
-    table { width: 100%; font-size: 36pt; margin-top: 20px; border-collapse: collapse; }
-    td { padding: 8px; }
+    h1 {
+      font-size: 52pt; /* 🔥 Título principal */
+      margin: 15px 0 5px 0;
+    }
+    h2 {
+      font-size: 46pt;
+      margin: 10px 0;
+    }
+    h3 {
+      font-size: 40pt;
+      margin: 10px 0 20px 0;
+    }
+    .data {
+      font-size: 38pt;
+      margin: 8px 0;
+      text-align: left;
+    }
+    table {
+      width: 100%;
+      font-size: 38pt;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th {
+      border-bottom: 4px solid black;
+      padding-bottom: 8px;
+      text-align: center;
+    }
+    td {
+      padding: 10px 0;
+      text-align: left;
+    }
+    td:last-child {
+      text-align: right;
+    }
+    .totales {
+      margin-top: 25px;
+      border-top: 4px solid black;
+      font-size: 40pt;
+      font-weight: bold;
+    }
+    .totales td {
+      padding: 12px 0;
+    }
+    .total-grande {
+      font-size: 48pt; /* 🔥 TOTAL resaltado */
+      font-weight: bold;
+    }
+    .policy {
+      margin-top: 40px;
+      font-size: 34pt;
+      line-height: 1.5;
+      text-align: center;
+    }
   </style>
 </head>
-<body>
-  <div class="ticket" id="ticket">
-    <h1>Mi Restaurante</h1>
-    <h2>Boleta #123</h2>
-    <h3>Mesa 8</h3>
-    <table>
-      <tr><td>Arroz Chaufa</td><td>S/ 15</td></tr>
-      <tr><td>Gaseosa</td><td>S/ 5</td></tr>
-      <tr><td><b>Total</b></td><td><b>S/ 20</b></td></tr>
-    </table>
-  </div>
+<body onload="window.print()">
 
-  <!-- html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script>
-    window.onload = function() {
-      const ticket = document.getElementById("ticket");
-      html2canvas(ticket).then(canvas => {
-        const img = canvas.toDataURL("image/png");
-        // Abre la imagen en nueva pestaña (puedes imprimir desde ahí con Thermer)
-        const w = window.open("");
-        w.document.write('<img src="' + img + '" style="width:100%">');
-      });
-    };
-  </script>
+<div class="ticket">
+  <h1>EL RAPIDIN</h1>
+  <h2>Caldos - Chifa - Broaster</h2>
+  <h3>San Martín de Pangoa</h3>
+
+  <p class="data"><b>TICKET:</b> <span id="nro_boleta_id"></span></p>
+  <p class="data"><b>MESA:</b> <span id="nro_mesa_id"></span></p>
+  <p class="data"><b>CLIENTE:</b> <span id="cliente_id"></span></p>
+  <p class="data" id="nro_direccion_id"></p>
+  <p class="data"><b>FECHA:</b> <span id="fechaR"></span> <b>HORA:</b> <span id="hora"></span></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Cant</th>
+        <th>Descripción</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="tablaBody"></tbody>
+  </table>
+
+  <table class="totales">
+    <tbody>
+      <tr>
+        <td class="total-grande">TOTAL A PAGAR:</td>
+        <td class="right total-grande" id="total"></td>
+      </tr>
+      <tr>
+        <td>CANCELA CON:</td>
+        <td class="right" id="efectivo"></td>
+      </tr>
+      <tr>
+        <td>VUELTO:</td>
+        <td class="right" id="devueltas"></td>
+      </tr>
+      <tr>
+        <td>FORMA DE PAGO:</td>
+        <td class="right" id="estado"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="policy">
+    * Comprobante informativo – sin validez fiscal *<br>
+    ¡Gracias por su preferencia! 🙌
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  function parseList(param) {
+    let val = (param || "")
+                .replace(/[{}]/g, "")
+                .replace(/\s+/g, "");
+    return val ? val.split(",") : [];
+  }
+
+  // Datos principales
+  var nro_boleta = params.get("boleta") || "285826-P-002";
+  var nro_mesa = params.get("mesa") || "Mesa 8";
+  var cliente = params.get("cliente") || "Cliente Final";
+  var direc = params.get("direccion") || "";
+  var fecha = params.get("fecha") || "14/09/2025";
+  var hora = params.get("fecha_entrega") || "18:40:30";
+
+  var total = parseFloat(params.get("total") || 17);
+  var efectivo = parseFloat(params.get("pago") || 50);
+  var vuelto = parseFloat(params.get("vuelto") || 33);
+  var estado = params.get("estado") || "EFECTIVO";
+
+  // Listas
+  const cantidades = parseList(params.get("cantidades")) || ["1","1"];
+  const servicios = parseList(params.get("servicios")) || ["Aeropuerto de pollo","Chaufa de pollo"];
+  const precios = parseList(params.get("p_unit")) || ["9.00","8.00"];
+
+  // Insertar en el HTML
+  document.getElementById("nro_boleta_id").textContent = nro_boleta;
+  document.getElementById("nro_mesa_id").textContent = nro_mesa;
+  document.getElementById("cliente_id").textContent = cliente;
+  document.getElementById("nro_direccion_id").textContent = direc;
+  document.getElementById("fechaR").textContent = fecha;
+  document.getElementById("hora").textContent = hora;
+  document.getElementById("total").textContent = total.toFixed(2);
+  document.getElementById("efectivo").textContent = efectivo.toFixed(2);
+  document.getElementById("devueltas").textContent = vuelto.toFixed(2);
+  document.getElementById("estado").textContent = estado;
+
+  const tablaBody = document.getElementById("tablaBody");
+  servicios.forEach((serv, i) => {
+    if (serv.trim() !== "") {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${cantidades[i] || 0}</td>
+        <td>${serv}</td>
+        <td>${Number(precios[i] || 0).toFixed(2)}</td>
+      `;
+      tablaBody.appendChild(row);
+    }
+  });
+</script>
+
 </body>
 </html>
