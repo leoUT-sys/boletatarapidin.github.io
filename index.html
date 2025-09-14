@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -8,45 +9,41 @@
       margin: 2mm;
     }
     body {
-      font-family: "Courier New", monospace;
-      font-size: 4.5mm; /* texto base más grande */
+      font-family: Tahoma, Helvetica, sans-serif;
       margin: 0;
       color: black;
+      text-align: center;
+      font-size: 3.5mm; /* texto base más legible */
     }
     .ticket {
       width: 100%;
       box-sizing: border-box;
     }
-    .center { text-align: center; }
-    .right { text-align: right; }
     h1 {
-      font-size: 7mm; /* título más grande */
+      font-size: 7mm;  /* título grande */
       margin: 2mm 0 1mm 0;
-      text-align: center;
+      font-weight: bold;
     }
     h2 {
-      font-size: 6mm;
+      font-size: 5mm; /* subtítulo */
       margin: 0;
-      text-align: center;
+      font-weight: bold;
     }
     h3 {
-      font-size: 5.5mm;
+      font-size: 4.5mm;
       margin: 1mm 0 3mm 0;
-      text-align: center;
+      font-weight: bold;
     }
     .data {
       margin: 1.5mm 0;
-      font-size: 5mm; /* info general más grande */
+      font-size: 4.5mm; /* info cliente más grande */
     }
-    .bold { font-weight: bold; }
     .ticket-num {
-      text-align: center;
-      font-size: 7mm;
+      font-size: 6mm;
       font-weight: bold;
       margin: 2mm 0;
     }
     .mesa {
-      text-align: center;
       font-size: 7mm;
       font-weight: bold;
       margin: 2mm 0;
@@ -57,16 +54,20 @@
       margin-top: 2mm;
     }
     th, td {
-      font-size: 5mm;
+      font-size: 4.5mm;
       padding: 1mm 0;
     }
     th {
       border-bottom: 1px dashed black;
       text-align: center;
+      font-weight: bold;
+    }
+    td.right {
+      text-align: right;
     }
     .totales {
       width: 100%;
-      font-size: 5.5mm;
+      font-size: 5mm;
       border-top: 1px dashed black;
       margin-top: 3mm;
       font-weight: bold;
@@ -75,13 +76,13 @@
       padding: 1mm 0;
     }
     .total-grande {
-      font-size: 7mm;
+      font-size: 6.5mm;
       font-weight: bold;
     }
     .policy {
       margin-top: 4mm;
       text-align: center;
-      font-size: 4.8mm;
+      font-size: 4.5mm;
       line-height: 1.4;
     }
   </style>
@@ -90,7 +91,7 @@
 
 <div class="ticket">
   <h1>EL RAPIDIN</h1>
-  <h2>Caldos - Chifa - Broaster</h2>
+  <h2>Caldos-Chifa-Broaster</h2>
   <h3>San Martín de Pangoa</h3>
 
   <!-- Ticket centrado -->
