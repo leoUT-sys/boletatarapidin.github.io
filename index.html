@@ -2,21 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket A4</title>
+  <title>Ticket A4 Grande</title>
   <style>
     @page {
       size: A4 portrait;
-      margin: 15mm;
+      margin: 20mm;
     }
     body {
       font-family: "Courier New", Consolas, monospace;
-      font-size: 28pt; /* 🔥 texto general más grande */
+      font-size: 32pt; /* 🔥 fuente base muy grande */
       margin: 0;
       color: black;
     }
     .ticket {
       width: 100%;
-      padding: 5mm;
       box-sizing: border-box;
     }
     .center {
@@ -25,23 +24,33 @@
     .right {
       text-align: right;
     }
-    h1, h2, h3 {
-      font-size: 36pt;  /* 🔥 títulos muy grandes */
-      margin: 8mm 0 4mm 0;
+    h1 {
+      font-size: 48pt;  /* 🔥 título muy grande */
+      margin: 10mm 0 5mm 0;
+      text-align: center;
+    }
+    h2 {
+      font-size: 40pt;
+      margin: 0;
+      text-align: center;
+    }
+    h3 {
+      font-size: 36pt;
+      margin: 5mm 0;
       text-align: center;
     }
     .data {
-      margin: 6mm 0;
-      font-size: 30pt; /* 🔥 datos grandes */
+      margin: 5mm 0;
+      font-size: 34pt;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8mm;
+      margin-top: 12mm;
     }
     th, td {
-      font-size: 28pt; /* 🔥 filas grandes */
-      padding: 6px 0;
+      font-size: 34pt;
+      padding: 12px 0;
     }
     th {
       border-bottom: 3px solid black;
@@ -49,18 +58,22 @@
     }
     .totales {
       width: 100%;
-      font-size: 32pt; /* 🔥 totales más grandes */
+      font-size: 36pt;
       border-top: 3px solid black;
-      margin-top: 10mm;
+      margin-top: 15mm;
       font-weight: bold;
     }
     .totales td {
-      padding: 6mm 0;
+      padding: 8mm 0;
+    }
+    .total-grande {
+      font-size: 44pt; /* 🔥 TOTAL resaltado */
+      font-weight: bold;
     }
     .policy {
-      margin-top: 16mm;
+      margin-top: 20mm;
       text-align: center;
-      font-size: 26pt; /* 🔥 mensaje final grande */
+      font-size: 28pt;
       line-height: 1.6;
     }
   </style>
@@ -92,8 +105,8 @@
   <table class="totales">
     <tbody>
       <tr>
-        <td>TOTAL A PAGAR:</td>
-        <td class="right" id="total"></td>
+        <td class="total-grande">TOTAL A PAGAR:</td>
+        <td class="right total-grande" id="total"></td>
       </tr>
       <tr>
         <td>CANCELA CON:</td>
@@ -129,7 +142,7 @@
   var nro_boleta = params.get("boleta") || "285826-P-002";
   var nro_mesa = params.get("mesa") || "Mesa 8";
   var cliente = params.get("cliente") || "Cliente Final";
-  var direc = params.get("direccion") || "San Martín de Pangoa";
+  var direc = params.get("direccion") || " ";
   var fecha = params.get("fecha") || "09/11/2025";
   var hora = params.get("fecha_entrega") || "18:40:30";
 
