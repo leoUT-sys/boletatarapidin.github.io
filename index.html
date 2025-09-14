@@ -83,37 +83,37 @@
         width: 100%;
         height: 100%;
         margin: 0;
-        font-size: 16pt;
+        font-size: 18pt; /* Texto más grande */
         text-align: left;
       }
 
       #thermal-pos {
         width: 100%;
-        max-width: 100%;
+        max-width: 180mm;
         margin: 0 auto;
       }
 
       .logo {
         text-align: center;
-        margin-bottom: 10mm;
+        margin-bottom: 8mm;
       }
 
       .logo img {
-        max-width: 80mm;
+        max-width: 40mm;  /* Logo reducido */
         height: auto;
       }
 
       h3 {
-        font-size: 22pt;
+        font-size: 24pt;
         text-align: center;
-        margin-bottom: 10mm;
+        margin-bottom: 8mm;
         border-bottom: 2px solid #000;
         padding-bottom: 5mm;
       }
 
       .nro_boleta, .nro_mesa, .cliente, .direccion, .fecha_recepcion {
-        font-size: 14pt;
-        margin: 4mm 0;
+        font-size: 16pt;
+        margin: 5mm 0;
       }
 
       .table {
@@ -124,14 +124,14 @@
 
       .table th, .table td {
         border: 1px solid black;
-        padding: 6px 10px;
-        font-size: 14pt;
+        padding: 8px 12px;
+        font-size: 16pt;
         text-align: left;
       }
 
       .totales {
         width: 100%;
-        font-size: 16pt;
+        font-size: 18pt;
         margin-top: 15mm;
         border-top: 2px solid black;
       }
@@ -148,7 +148,7 @@
 
       .totales .valor {
         text-align: right;
-        width: 40mm;
+        width: 50mm;
       }
 
       .policy {
@@ -157,8 +157,8 @@
       }
 
       .small-text {
-        font-size: 12pt;
-        line-height: 1.5;
+        font-size: 14pt;
+        line-height: 1.6;
       }
     }
   </style>
@@ -173,20 +173,20 @@
     return val ? val.split(",") : [];
   }
 
-  var nro_boleta = params.get("boleta") || "---";
-  var nro_mesa = params.get("mesa") || "---";
-  var cliente = params.get("cliente") || "---";
+  var nro_boleta = params.get("boleta") || "285826-P-002";
+  var nro_mesa = params.get("mesa") || "Mesa 8";
+  var cliente = params.get("cliente") || "Cliente Final";
   var direc = params.get("direccion") || "---";
-  var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
+  var fecha = params.get("fecha") || "09/11/2025 18:40:30";
   var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
-  var total = parseFloat(params.get("total") || 0);
-  var pago = parseFloat(params.get("pago") || 0);
-  var vuelto = parseFloat(params.get("vuelto") || 0);
-  var estado = params.get("estado") || "--";
+  var total = parseFloat(params.get("total") || 17);
+  var pago = parseFloat(params.get("pago") || 50);
+  var vuelto = parseFloat(params.get("vuelto") || 33);
+  var estado = params.get("estado") || "EFECTIVO";
 
-  const cantidades = parseList(params.get("cantidades"));
-  const servicios = parseList(params.get("servicios"));
-  const precios = parseList(params.get("p_unit"));
+  const cantidades = parseList(params.get("cantidades")) || [1,1];
+  const servicios = parseList(params.get("servicios")) || ["Aeropuerto de pollo","Chaufa de pollo"];
+  const precios = parseList(params.get("p_unit")) || [9.00,8.00];
 </script>
 
 <div id="thermal-pos">
