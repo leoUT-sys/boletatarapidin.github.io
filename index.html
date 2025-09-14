@@ -4,264 +4,158 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ticket / Factura</title>
+  <title>Ticket de Compra</title>
   <style>
-    /* --- Ticket en rollo 58mm --- */
-    @page {
-      size: 58mm auto;
-      margin: 0;
-    }
-
     body {
-      width: 58mm;
-      margin: 0 auto;
       font-family: Tahoma, Helvetica, sans-serif;
-      font-size: 20px;
-      text-align: center;
+      margin: 0;
+      font-size: 13px;   /* Tamaño estándar para tickets */
+      text-align: left;
     }
-
     #thermal-pos {
+      width: 58mm;   /* Ancho del papel */
+      margin: 0 auto;
+    }
+    .logo img {
       width: 100%;
+      max-width: 58mm;
+      height: auto;
     }
-
-    h3 {
-      margin: 5px 0;
-      font-size: 18px;
+    .titulo {
+      margin: 3px 0;
+      font-size: 13px;
+      font-weight: bold;
+      text-align: center; 
     }
-
-    .nro_boleta, .nro_mesa {
-      font-size: 20px;
-      margin: 5px 0;
+    .nro_boleta, .nro_mesa, .cliente, .direccion, .fecha_recepcion {
+      margin: 3px 0;
+      font-size: 13px;
+      text-align: left;
     }
-
-    .cliente, .direccion, .fecha_recepcion {
-      font-size: 18px;
-      margin: 5px 0;
-    }
-
     .table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 5px;
     }
-
     .table th, .table td {
-      text-align: center;
-      padding: 5px;
-      font-size: 18px;
+      text-align: left;
+      padding: 3px;
+      font-size: 13px;
+      word-wrap: break-word;
     }
-
+    .table th {
+      border-bottom: 1px dashed black;
+    }
     .totales {
-      width: 100%;
-      font-size: 20px;
-      border-top: 2px dashed black;
-      margin-top: 10px;
-      text-align: center;
+      margin-top: 8px;
+      border-top: 1px dashed black;
+      padding-top: 5px;
+      font-size: 13px;
     }
-
-    .totales td {
-      padding: 5px 0;
+    .totales .fila {
+      display: flex;
+      justify-content: space-between;
+      margin: 2px 0;
     }
-
     .policy {
       margin-top: 10px;
-    }
-
-    .small-text {
-      font-size: 16px;
-      line-height: 1.4;
-    }
-
-    /* --- FACTURA en hoja A4 --- */
-    @media print and (width: 210mm) and (height: 297mm) {
-      @page {
-        size: A4;
-        margin: 15mm;
-      }
-
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        font-size: 18pt; /* Texto más grande */
-        text-align: left;
-      }
-
-      #thermal-pos {
-        width: 100%;
-        max-width: 180mm;
-        margin: 0 auto;
-      }
-
-      .logo {
-        text-align: center;
-        margin-bottom: 8mm;
-      }
-
-      .logo img {
-        max-width: 40mm;  /* Logo reducido */
-        height: auto;
-      }
-
-      h3 {
-        font-size: 24pt;
-        text-align: center;
-        margin-bottom: 8mm;
-        border-bottom: 2px solid #000;
-        padding-bottom: 5mm;
-      }
-
-      .nro_boleta, .nro_mesa, .cliente, .direccion, .fecha_recepcion {
-        font-size: 16pt;
-        margin: 5mm 0;
-      }
-
-      .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10mm;
-      }
-
-      .table th, .table td {
-        border: 1px solid black;
-        padding: 8px 12px;
-        font-size: 16pt;
-        text-align: left;
-      }
-
-      .totales {
-        width: 100%;
-        font-size: 18pt;
-        margin-top: 15mm;
-        border-top: 2px solid black;
-      }
-
-      .totales td {
-        padding: 5px 0;
-      }
-
-      .totales .label {
-        text-align: right;
-        font-weight: bold;
-        padding-right: 10mm;
-      }
-
-      .totales .valor {
-        text-align: right;
-        width: 50mm;
-      }
-
-      .policy {
-        margin-top: 20mm;
-        text-align: center;
-      }
-
-      .small-text {
-        font-size: 14pt;
-        line-height: 1.6;
-      }
+      font-size: 11px;
+      text-align: center;
     }
   </style>
 </head>
-<body onload="window.print()" onfocus="window.close()">
+<body onload="window.print()">
 
 <script>
   const params = new URLSearchParams(window.location.search);
 
   function parseList(param) {
-    let val = (param || "").replace(/[{}]/g, "").replace(/\s+/g, "");
+    let val = (param || "")
+                .replace(/[{}]/g, "")
+                .replace(/\s+/g, "");
     return val ? val.split(",") : [];
   }
 
-  var nro_boleta = params.get("boleta") || "285826-P-002";
-  var nro_mesa = params.get("mesa") || "Mesa 8";
-  var cliente = params.get("cliente") || "Cliente Final";
-  var direc = params.get("direccion") || "---";
-  var fecha = params.get("fecha") || "09/11/2025 18:40:30";
-  var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
-  var total = parseFloat(params.get("total") || 17);
-  var pago = parseFloat(params.get("pago") || 50);
-  var vuelto = parseFloat(params.get("vuelto") || 33);
-  var estado = params.get("estado") || "EFECTIVO";
+  // Datos principales
+  var nro_boleta   = params.get("boleta")       || "---";
+  var nro_mesa     = params.get("mesa")         || "---";
+  var cliente      = params.get("cliente")      || "---";
+  var direc        = params.get("direccion")    || "---";
+  var fecha        = params.get("fecha")        || "dd/mm/aaaa hh:mm:ss";
+  var fecha_entrega= params.get("fecha_entrega")|| "--:--";
 
-  const cantidades = parseList(params.get("cantidades")) || [1,1];
-  const servicios = parseList(params.get("servicios")) || ["Aeropuerto de pollo","Chaufa de pollo"];
-  const precios = parseList(params.get("p_unit")) || [9.00,8.00];
+  // Totales
+  var total    = parseFloat(params.get("total")    || 0);
+  var pago     = parseFloat(params.get("pago")     || 0);   // antes "descuento"
+  var vuelto   = parseFloat(params.get("vuelto")   || 0);   // antes "subtotal_desc"
+  var estado   = params.get("estado")              || "--";
+
+  // Detalles
+  const cantidades = parseList(params.get("cantidades"));
+  const servicios  = parseList(params.get("servicios"));
+  const p_unit     = parseList(params.get("p_unit"));
 </script>
 
 <div id="thermal-pos">
-  <div class="logo">
+  <div class="logo" style="text-align:center;">
     <img src="logo.png" alt="Mi Logo">
   </div>
-  <h3>EL RAPIDIN<br> Caldos - Chifa - Broaster <br> San Martin de Pangoa</h3>
 
-  <div>
-    <b>TICKET:</b>
-    <h1 class="nro_boleta" id="nro_boleta_id"></h1>
-    <h1 class="nro_mesa" id="nro_mesa_id"></h1>
-    <h2 class="cliente">Cliente: <span id="cliente_id"></span></h2>
-    <h3 class="direccion" id="nro_direccion_id"></h3>
-  </div>
+  <div class="titulo">EL RAPIDIN</div>
+  <div class="titulo">Caldos - Chifa - Broaster</div>
+  <div class="titulo">San Martin de Pangoa</div>
 
-  <div>
-    <p class="fecha_recepcion">
-      FECHA DE RECEPCION:<br>
-      <b id="fechaR"></b> <b id="hora"></b>
-    </p>
+  <div class="nro_boleta"><b>TICKET:</b> <span id="nro_boleta_id"></span></div>
+  <div class="nro_mesa"><b>Mesa:</b> <span id="nro_mesa_id"></span></div>
+  <div class="cliente"><b>Cliente:</b> <span id="cliente_id"></span></div>
+  <div class="direccion" id="nro_direccion_id"></div>
+  <div class="fecha_recepcion">
+    <b>Recepción:</b> <span id="fechaR"></span><br>
+    <b>Entrega:</b> <span id="hora"></span>
   </div>
 
   <table class="table">
-    <tbody id="tablaBody">
+    <thead>
       <tr>
         <th>Cant</th>
         <th>Descripción</th>
         <th>Total</th>
       </tr>
-    </tbody>
+    </thead>
+    <tbody id="tablaBody"></tbody>
   </table>
 
-  <table class="totales">
-    <tbody>
-      <tr>
-        <td class="label">TOTAL A PAGAR:</td>
-        <td class="valor" id="total"></td>
-      </tr>
-      <tr>
-        <td class="label">CANCELA CON:</td>
-        <td class="valor" id="efectivo"></td>
-      </tr>
-      <tr>
-        <td class="label">VUELTO:</td>
-        <td class="valor" id="devueltas"></td>
-      </tr>
-      <tr>
-        <td class="label">FORMA DE PAGO:</td>
-        <td class="valor" id="estado"></td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="totales">
+    <div class="fila"><span>TOTAL A PAGAR:</span><span id="total"></span></div>
+    <div class="fila"><span>CANCELA CON:</span><span id="pago"></span></div>
+    <div class="fila"><span>VUELTO:</span><span id="vuelto"></span></div>
+    <div class="fila"><span>FORMA DE PAGO:</span><span id="estado"></span></div>
+  </div>
 
   <div class="policy">
     <p><b>IMPORTANTE:</b></p>
-    <p class="small-text">
-      Comprobante informativo – sin validez fiscal.<br/>
-      Su preferencia nos motiva a seguir brindando lo mejor. <br>
+    <p>
+      Comprobante informativo – sin validez fiscal.<br>
+      ¡Gracias por su preferencia!
     </p>
   </div>
 </div>
 
 <script>
+  // Rellenar campos
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
-  document.getElementById("nro_mesa_id").textContent = nro_mesa;
-  document.getElementById("cliente_id").textContent = cliente;
+  document.getElementById("nro_mesa_id").textContent   = nro_mesa;
+  document.getElementById("cliente_id").textContent    = cliente;
   document.getElementById("nro_direccion_id").textContent = direc;
-  document.getElementById("fechaR").textContent = fecha;
-  document.getElementById("hora").textContent = fecha_entrega;
-  document.getElementById("total").textContent = total.toFixed(2);
-  document.getElementById("efectivo").textContent = pago.toFixed(2);
-  document.getElementById("devueltas").textContent = vuelto.toFixed(2);
+  document.getElementById("fechaR").textContent        = fecha;
+  document.getElementById("hora").textContent          = fecha_entrega;
+
+  document.getElementById("total").textContent  = total.toFixed(2);
+  document.getElementById("pago").textContent   = pago.toFixed(2);
+  document.getElementById("vuelto").textContent = vuelto.toFixed(2);
   document.getElementById("estado").textContent = estado;
 
+  // Render productos
   const tablaBody = document.getElementById("tablaBody");
   servicios.forEach((serv, i) => {
     if (serv.trim() !== "") {
@@ -269,7 +163,7 @@
       row.innerHTML = `
         <td>${cantidades[i] || 0}</td>
         <td>${serv}</td>
-        <td>${Number(precios[i] || 0).toFixed(2)}</td>
+        <td>${Number(p_unit[i] || 0).toFixed(2)}</td>
       `;
       tablaBody.appendChild(row);
     }
