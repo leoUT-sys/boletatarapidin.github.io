@@ -13,30 +13,38 @@
       margin: 0;
       color: black;
       text-align: center;
-      font-size: 3.5mm; /* texto base más legible */
+      font-size: 3.5mm;
     }
     .ticket {
       width: 100%;
       box-sizing: border-box;
     }
+    .logo {
+      text-align: center;
+      margin-bottom: 2mm;
+    }
+    .logo img {
+      max-width: 50mm; /* se adapta al ancho del ticket */
+      height: auto;
+    }
     h1 {
-      font-size: 7mm;  /* título grande */
+      font-size: 7mm;
       margin: 2mm 0 1mm 0;
       font-weight: bold;
     }
     h2 {
-      font-size: 5mm; /* subtítulo */
+      font-size: 5.5mm;
       margin: 0;
       font-weight: bold;
     }
     h3 {
-      font-size: 4.5mm;
+      font-size: 5mm;
       margin: 1mm 0 3mm 0;
       font-weight: bold;
     }
     .data {
       margin: 1.5mm 0;
-      font-size: 4.5mm; /* info cliente más grande */
+      font-size: 4.5mm;
     }
     .ticket-num {
       font-size: 6mm;
@@ -90,8 +98,14 @@
 <body onload="window.print()" onfocus="window.close()">
 
 <div class="ticket">
+
+  <!-- LOGO -->
+  <div class="logo">
+    <img src="logo.png" alt="Logo">
+  </div>
+
   <h1>EL RAPIDIN</h1>
-  <h2>Caldos-Chifa-Broaster</h2>
+  <h2>Caldos - Chifa - Broaster</h2>
   <h3>San Martín de Pangoa</h3>
 
   <!-- Ticket centrado -->
