@@ -2,15 +2,15 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket A4</title>
+  <title>Ticket Grande</title>
   <style>
     @page {
       size: A4 portrait;
-      margin: 15mm;
+      margin: 10mm;
     }
     body {
-      font-family: "Courier New", Consolas, monospace;
-      font-size: 20pt;
+      font-family: "Courier New", monospace;
+      font-size: 28pt; /* letras más grandes */
       margin: 0;
       color: black;
     }
@@ -21,23 +21,23 @@
     .center { text-align: center; }
     .right { text-align: right; }
     h1 {
-      font-size: 40pt;
+      font-size: 60pt;  /* más grande */
       margin: 5mm 0 2mm 0;
       text-align: center;
     }
     h2 {
-      font-size: 28pt;
+      font-size: 40pt;
       margin: 0;
       text-align: center;
     }
     h3 {
-      font-size: 24pt;
+      font-size: 36pt;
       margin: 2mm 0 8mm 0;
       text-align: center;
     }
     .data {
-      margin: 4mm 0;
-      font-size: 22pt;
+      margin: 6mm 0;
+      font-size: 34pt; /* más grande */
     }
     .bold { font-weight: bold; }
     table {
@@ -46,31 +46,31 @@
       margin-top: 8mm;
     }
     th, td {
-      font-size: 22pt;
-      padding: 6px 0;
+      font-size: 34pt; /* grande en la tabla */
+      padding: 10px 0;
     }
     th {
-      border-bottom: 2px solid black;
+      border-bottom: 3px solid black;
       text-align: center;
     }
     .totales {
       width: 100%;
-      font-size: 24pt;
-      border-top: 2px solid black;
-      margin-top: 10mm;
+      font-size: 38pt;
+      border-top: 3px solid black;
+      margin-top: 12mm;
       font-weight: bold;
     }
     .totales td {
-      padding: 6px 0;
+      padding: 8px 0;
     }
     .total-grande {
-      font-size: 30pt;
+      font-size: 50pt;  /* el total gigante */
       font-weight: bold;
     }
     .policy {
-      margin-top: 15mm;
+      margin-top: 18mm;
       text-align: center;
-      font-size: 18pt;
+      font-size: 28pt;
       line-height: 1.6;
     }
   </style>
@@ -102,7 +102,7 @@
   <table class="totales">
     <tbody>
       <tr>
-        <td class="total-grande">TOTAL A PAGAR:</td>
+        <td class="total-grande">TOTAL:</td>
         <td class="right total-grande" id="total"></td>
       </tr>
       <tr>
@@ -121,7 +121,7 @@
   </table>
 
   <div class="policy">
-    * Comprobante informativo – sin validez fiscal *<br>
+    * Comprobante informativo *<br>
     ¡Gracias por su preferencia! 🙌
   </div>
 </div>
@@ -141,19 +141,19 @@
   var nro_mesa = params.get("mesa") || "Mesa 8";
   var cliente = params.get("cliente") || "Cliente Final";
   var direc = params.get("direccion") || "";
-  var fecha = params.get("fecha") || "09/11/2025";
-  var hora = params.get("fecha_entrega") || "18:40:30";
+  var fecha = params.get("fecha") || "14/09/2025";
+  var hora = params.get("fecha_entrega") || "12:45:00";
 
   // Totales
-  var total = parseFloat(params.get("total") || 17);
+  var total = parseFloat(params.get("total") || 45);
   var efectivo = parseFloat(params.get("pago") || 50);
-  var vuelto = parseFloat(params.get("vuelto") || 33);
+  var vuelto = parseFloat(params.get("vuelto") || 5);
   var estado = params.get("estado") || "EFECTIVO";
 
   // Listas de productos
-  const cantidades = parseList(params.get("cantidades")) || ["1","1"];
-  const servicios = parseList(params.get("servicios")) || ["Aeropuerto de pollo","Chaufa de pollo"];
-  const precios = parseList(params.get("p_unit")) || ["9.00","8.00"];
+  const cantidades = parseList(params.get("cantidades")) || ["2","1"];
+  const servicios = parseList(params.get("servicios")) || ["Aeropuerto","Broaster 1/4"];
+  const precios = parseList(params.get("p_unit")) || ["30.00","15.00"];
 
   // Render de datos en el ticket
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
