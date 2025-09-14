@@ -2,208 +2,206 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket 58mm</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=58mm, initial-scale=1.0">
+  <title>Ticket de Compra</title>
   <style>
-    @page {
-      size: 58mm auto;
-      margin: 2mm;
-    }
     body {
       font-family: Tahoma, Helvetica, sans-serif;
-      font-size: 3.6mm; /* un poco más pequeño que antes */
       margin: 0;
-      color: black;
+      font-size: 18px;   /* Tamaño base reducido un poco */
+      text-align: center;
     }
-    .ticket {
+    #thermal-pos {
+      width: 58mm;
+      margin: 0 auto;
+    }
+    .logo img {
       width: 100%;
-      box-sizing: border-box;
-    }
-    .center { text-align: center; }
-    .right { text-align: right; }
-    h1 {
-      font-size: 5.5mm; 
-      margin: 2mm 0 1mm 0;
-      text-align: center;
-    }
-    h2 {
-      font-size: 4.8mm;
-      margin: 0;
-      text-align: center;
+      max-width: 58mm;
+      height: auto;
     }
     h3 {
-      font-size: 4.2mm;
-      margin: 1mm 0 3mm 0;
-      text-align: center;
+      margin: 5px 0;
+      font-size: 20px;
     }
-    .data {
-      margin: 1mm 0;
-      font-size: 3.6mm;
+    .nro_boleta, .nro_mesa {
+      margin: 5px 0;
+      font-size: 24px;
     }
-    .bold { font-weight: bold; }
-    .ticket-num {
-      text-align: center;
-      font-size: 5.5mm;
-      font-weight: bold;
-      margin: 2mm 0;
+    .cliente {
+      font-size: 20px;
+      margin: 5px 0;
     }
-    .mesa {
-      text-align: center;
-      font-size: 5.5mm;
-      font-weight: bold;
-      margin: 2mm 0;
+    .direccion, .fecha_recepcion {
+      font-size: 18px;
+      margin: 5px 0;
     }
-    table {
+    .table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 2mm;
+      margin-top: 10px;
     }
-    th, td {
-      font-size: 3.6mm;
-      padding: 0.5mm 0;
-    }
-    th {
-      border-bottom: 1px dashed black;
-      text-align: center;
+    .table th, .table td {
+      text-align: left;
+      padding: 4px;
+      font-size: 18px;
+      word-wrap: break-word;
     }
     .totales {
       width: 100%;
-      font-size: 4mm;
-      border-top: 1px dashed black;
-      margin-top: 3mm;
-      font-weight: bold;
+      font-size: 20px;
+      border-top: 2px dashed black;
+      margin-top: 10px;
     }
     .totales td {
-      padding: 0.5mm 0;
+      padding: 4px 0;
     }
-    .total-grande {
-      font-size: 4.8mm;
-      font-weight: bold;
+    .totales .label {
+      text-align: left;
+    }
+    .totales .valor {
+      text-align: right;
     }
     .policy {
-      margin-top: 4mm;
-      text-align: center;
-      font-size: 3mm;
+      margin-top: 10px;
+    }
+    .small-text {
+      font-size: 16px;
       line-height: 1.4;
+    }
+    .fh-impresion {
+      font-size: 16px;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
-<div class="ticket">
-  <h1>EL RAPIDIN</h1>
-  <h2>Caldos - Chifa - Broaster</h2>
-  <h3>San Martín de Pangoa</h3>
+<script>
+  const params = new URLSearchParams(window.location.search);
 
-  <!-- Ticket centrado -->
-  <div class="ticket-num">
-    TICKET<br>
-    <span id="nro_boleta_id"></span>
+  function parseList(param) {
+    let val = (param || "")
+                .replace(/[{}]/g, "")
+                .replace(/\s+/g, "");
+    return val ? val.split(",") : [];
+  }
+
+  var nro_boleta = params.get("boleta") || "---";
+  var nro_mesa = params.get("mesa") || "---";
+  var cliente = params.get("cliente") || "---";
+  var direc = params.get("direccion") || "---";
+  var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
+  var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
+  
+  var total = parseFloat(params.get("total") || 0);
+  var paga = parseFloat(params.get("paga") || 0);   // cuánto entrega el cliente
+  var estado = params.get("estado") || "--";
+
+  const cantidades = parseList(params.get("cantidades"));
+  const servicios = parseList(params.get("servicios"));
+  const p_unit = parseList(params.get("p_unit"));
+
+  // cálculo del vuelto
+  var vuelto = paga - total;
+
+  // fecha/hora de impresión
+  var fechaImpresion = new Date();
+  var fh_impresion = fechaImpresion.toLocaleString();
+</script>
+
+<div id="thermal-pos">
+  <div class="label">
+    <div class="logo" style="text-align:center;">
+      <img src="logo.png" alt="Mi Logo">
+    </div>
+    <h3>EL RAPIDIN<br> Caldos - Chifa - Broaster <br> San Martin de Pangoa</h3>
   </div>
 
-  <!-- Cliente -->
-  <p class="data"><b>Cliente:</b> <span id="cliente_id"></span></p>
+  <div class="label">
+    <b>TICKET:</b>
+    <h1 class="nro_boleta" id="nro_boleta_id"></h1>
+    <h1 class="nro_mesa" id="nro_mesa_id"></h1>
+    <h2 class="cliente">Cliente: <span id="cliente_id"></span></h2>
+    <h3 class="direccion" id="nro_direccion_id"></h3>
+  </div>
 
-  <!-- Mesa centrada -->
-  <div class="mesa" id="nro_mesa_id"></div>
+  <div class="label">
+    <p class="fecha_recepcion">
+      FECHA DE RECEPCIÓN: <br>
+      <b id="fechaR"></b> <b id="hora"></b>
+    </p>
+    <!-- Si quieres F/H original del pedido, descomenta: -->
+    <!-- <p>F/H Pedido: <span id="fechaR"></span></p> -->
+  </div>
 
-  <p class="data" id="nro_direccion_id"></p>
-
-  <!-- Línea con F/H enviado desde AppSheet (comentada) -->
-  <!-- <p class="data"><b>F/H:</b> <span id="fechaR"></span></p> -->
-
-  <!-- Nueva línea con fecha/hora de impresión -->
-  <p class="data"><b>F/H Impresión:</b> <span id="fecha_impresion"></span></p>
-
-  <table>
-    <thead>
-      <tr>
+  <table class="table">
+    <tbody id="tablaBody">
+      <tr class="table-header">
         <th>Cant</th>
         <th>Descripción</th>
         <th>Total</th>
       </tr>
-    </thead>
-    <tbody id="tablaBody"></tbody>
+    </tbody>
   </table>
 
   <table class="totales">
     <tbody>
       <tr>
-        <td class="total-grande">TOTAL:</td>
-        <td class="right total-grande" id="total"></td>
+        <td class="label">TOTAL A PAGAR:</td>
+        <td class="valor" id="total"></td>
       </tr>
       <tr>
-        <td>CANCELA:</td>
-        <td class="right" id="efectivo"></td>
+        <td class="label">CANCELA CON:</td>
+        <td class="valor" id="efectivo"></td>
       </tr>
       <tr>
-        <td>VUELTO:</td>
-        <td class="right" id="devueltas"></td>
+        <td class="label">VUELTO:</td>
+        <td class="valor" id="vuelto"></td>
       </tr>
       <tr>
-        <td>PAGO:</td>
-        <td class="right" id="estado"></td>
+        <td class="label">FORMA DE PAGO:</td>
+        <td class="valor" id="estado"></td>
       </tr>
     </tbody>
   </table>
 
+  <div class="fh-impresion">
+    F/H Impresión: <span id="fh_impresion"></span>
+  </div>
+
   <div class="policy">
-    * Comprobante solo informativo no sustituye boleta ni factura *<br>
-    ¡Gracias por su preferencia!
+    <p><b>IMPORTANTE:</b></p>
+    <p class="small-text">
+      Comprobante informativo – sin validez fiscal.<br/>
+      Su preferencia nos motiva a seguir brindando lo mejor. <br>
+    </p>
   </div>
 </div>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
+  document.getElementById("nro_boleta_id").textContent = nro_boleta;
+  document.getElementById("nro_mesa_id").textContent = nro_mesa;
+  document.getElementById("cliente_id").textContent = cliente;
+  document.getElementById("nro_direccion_id").textContent = direc;
+  document.getElementById("fechaR").textContent = fecha;
+  document.getElementById("hora").textContent = fecha_entrega;
 
-  function parseList(param) {
-    let val = (param || "").replace(/[{}]/g, "").replace(/\s+/g, "");
-    return val ? val.split(",") : [];
-  }
+  document.getElementById("total").textContent = total.toFixed(2);
+  document.getElementById("efectivo").textContent = paga.toFixed(2);
+  document.getElementById("vuelto").textContent = vuelto.toFixed(2);
+  document.getElementById("estado").textContent = estado;
+  document.getElementById("fh_impresion").textContent = fh_impresion;
 
-  // Datos desde AppSheet
-  var nro_boleta = params.get("boleta");
-  var nro_mesa = params.get("mesa");
-  var cliente = params.get("cliente");
-  var direc = params.get("direccion");
-  // var fecha = params.get("fecha"); // si deseas usarlo
-  // var hora = params.get("fecha_entrega"); // si deseas usarlo
-
-  var total = parseFloat(params.get("total") || 0);
-  var efectivo = parseFloat(params.get("pago") || 0);
-  var vuelto = parseFloat(params.get("vuelto") || 0);
-  var estado = params.get("estado");
-
-  const cantidades = parseList(params.get("cantidades"));
-  const servicios = parseList(params.get("servicios"));
-  const precios = parseList(params.get("p_unit"));
-
-  // Render en ticket
-  document.getElementById("nro_boleta_id").textContent = nro_boleta || "";
-  document.getElementById("nro_mesa_id").textContent = nro_mesa || "";
-  document.getElementById("cliente_id").textContent = cliente || "";
-  document.getElementById("nro_direccion_id").textContent = direc || "";
-  // document.getElementById("fechaR").textContent = fecha + " " + hora; // opcional
-
-  document.getElementById("total").textContent = total ? total.toFixed(2) : "";
-  document.getElementById("efectivo").textContent = efectivo ? efectivo.toFixed(2) : "";
-  document.getElementById("devueltas").textContent = vuelto ? vuelto.toFixed(2) : "";
-  document.getElementById("estado").textContent = estado || "";
-
-  // F/H Impresión en tiempo real
-  const ahora = new Date();
-  const fechaHoy = ahora.toLocaleDateString("es-PE");
-  const horaHoy = ahora.toLocaleTimeString("es-PE");
-  document.getElementById("fecha_impresion").textContent = fechaHoy + " " + horaHoy;
-
-  // Generar tabla de productos
   const tablaBody = document.getElementById("tablaBody");
   servicios.forEach((serv, i) => {
     if (serv.trim() !== "") {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${cantidades[i] || ""}</td>
+        <td>${cantidades[i] || 0}</td>
         <td>${serv}</td>
-        <td class="right">${Number(precios[i] || 0).toFixed(2)}</td>
+        <td>${Number(p_unit[i] || 0).toFixed(2)}</td>
       `;
       tablaBody.appendChild(row);
     }
