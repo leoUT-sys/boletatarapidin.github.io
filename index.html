@@ -1,16 +1,15 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket Grande</title>
+  <title>Ticket 58mm</title>
   <style>
     @page {
-      size: A4 portrait;
-      margin: 10mm;
+      size: 58mm auto;
+      margin: 2mm;
     }
     body {
       font-family: "Courier New", monospace;
-      font-size: 28pt; /* letras más grandes */
+      font-size: 14pt; /* tamaño base grande para 58mm */
       margin: 0;
       color: black;
     }
@@ -21,57 +20,57 @@
     .center { text-align: center; }
     .right { text-align: right; }
     h1 {
-      font-size: 60pt;  /* más grande */
-      margin: 5mm 0 2mm 0;
+      font-size: 22pt;
+      margin: 2mm 0 1mm 0;
       text-align: center;
     }
     h2 {
-      font-size: 36pt;
+      font-size: 16pt;
       margin: 0;
       text-align: center;
     }
     h3 {
-      font-size: 30pt;
-      margin: 2mm 0 8mm 0;
+      font-size: 14pt;
+      margin: 1mm 0 4mm 0;
       text-align: center;
     }
     .data {
-      margin: 6mm 0;
-      font-size: 34pt; /* más grande */
+      margin: 2mm 0;
+      font-size: 14pt;
     }
     .bold { font-weight: bold; }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8mm;
+      margin-top: 3mm;
     }
     th, td {
-      font-size: 34pt; /* grande en la tabla */
-      padding: 10px 0;
+      font-size: 14pt;
+      padding: 2px 0;
     }
     th {
-      border-bottom: 3px solid black;
+      border-bottom: 1px solid black;
       text-align: center;
     }
     .totales {
       width: 100%;
-      font-size: 38pt;
-      border-top: 3px solid black;
-      margin-top: 12mm;
+      font-size: 15pt;
+      border-top: 1px solid black;
+      margin-top: 4mm;
       font-weight: bold;
     }
     .totales td {
-      padding: 8px 0;
+      padding: 2px 0;
     }
     .total-grande {
-      font-size: 45pt;  /* el total gigante */
+      font-size: 18pt;
       font-weight: bold;
     }
     .policy {
-      margin-top: 18mm;
+      margin-top: 6mm;
       text-align: center;
-      font-size: 28pt;
-      line-height: 1.6;
+      font-size: 12pt;
+      line-height: 1.3;
     }
   </style>
 </head>
@@ -106,7 +105,7 @@
         <td class="right total-grande" id="total"></td>
       </tr>
       <tr>
-        <td>CANCELA CON:</td>
+        <td>CANCELA:</td>
         <td class="right" id="efectivo"></td>
       </tr>
       <tr>
@@ -114,7 +113,7 @@
         <td class="right" id="devueltas"></td>
       </tr>
       <tr>
-        <td>FORMA DE PAGO:</td>
+        <td>PAGO:</td>
         <td class="right" id="estado"></td>
       </tr>
     </tbody>
@@ -183,4 +182,3 @@
 
 </body>
 </html>
-
