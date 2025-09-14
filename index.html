@@ -9,49 +9,50 @@
       margin: 2mm;
     }
     body {
-      font-family: Tahoma, Helvetica, sans-serif;
+      font-family: "Courier New", monospace;
+      font-size: 4.5mm; /* texto base más grande */
       margin: 0;
       color: black;
-      text-align: center;
-      font-size: 3.5mm;
     }
     .ticket {
       width: 100%;
       box-sizing: border-box;
     }
-    .logo {
-      text-align: center;
-      margin-bottom: 2mm;
-    }
-    .logo img {
-      max-width: 50mm; /* se adapta al ancho del ticket */
-      height: auto;
-    }
+    .center { text-align: center; }
+    .right { text-align: right; }
     h1 {
-      font-size: 7mm;
-      margin: 2mm 0 1mm 0;
-      font-weight: bold;
+      font-size: 7mm; /* título más grande */
+      margin: 1mm 0;
+      text-align: center;
     }
     h2 {
-      font-size: 5.5mm;
+      font-size: 6mm;
       margin: 0;
-      font-weight: bold;
+      text-align: center;
     }
     h3 {
-      font-size: 5mm;
+      font-size: 5.5mm;
       margin: 1mm 0 3mm 0;
-      font-weight: bold;
+      text-align: center;
+    }
+    .logo {
+      width: 40mm;
+      display: block;
+      margin: 0 auto 2mm auto;
     }
     .data {
       margin: 1.5mm 0;
-      font-size: 4.5mm;
+      font-size: 5mm; /* info general más grande */
     }
+    .bold { font-weight: bold; }
     .ticket-num {
-      font-size: 6mm;
+      text-align: center;
+      font-size: 7mm;
       font-weight: bold;
       margin: 2mm 0;
     }
     .mesa {
+      text-align: center;
       font-size: 7mm;
       font-weight: bold;
       margin: 2mm 0;
@@ -62,20 +63,16 @@
       margin-top: 2mm;
     }
     th, td {
-      font-size: 4.5mm;
+      font-size: 5mm;
       padding: 1mm 0;
     }
     th {
       border-bottom: 1px dashed black;
       text-align: center;
-      font-weight: bold;
-    }
-    td.right {
-      text-align: right;
     }
     .totales {
       width: 100%;
-      font-size: 5mm;
+      font-size: 5.5mm;
       border-top: 1px dashed black;
       margin-top: 3mm;
       font-weight: bold;
@@ -84,13 +81,13 @@
       padding: 1mm 0;
     }
     .total-grande {
-      font-size: 6mm;
+      font-size: 7mm;
       font-weight: bold;
     }
     .policy {
       margin-top: 4mm;
       text-align: center;
-      font-size: 2mm;
+      font-size: 4.8mm;
       line-height: 1.4;
     }
   </style>
@@ -98,12 +95,10 @@
 <body onload="window.print()" onfocus="window.close()">
 
 <div class="ticket">
+  <!-- Logo -->
+  <img src="logo.png" alt="Logo" class="logo">
 
-  <!-- LOGO -->
-  <div class="logo">
-    <img src="logo.png" alt="Logo">
-  </div>
-
+  <!-- Encabezado -->
   <h1>EL RAPIDIN</h1>
   <h2>Caldos - Chifa - Broaster</h2>
   <h3>San Martín de Pangoa</h3>
@@ -121,8 +116,14 @@
   <div class="mesa" id="nro_mesa_id"></div>
 
   <p class="data" id="nro_direccion_id"></p>
-  <p class="data"><b>F/H:</b> <span id="fechaR"></span></p>
 
+  <!-- F/H enviado desde AppSheet (deshabilitado por defecto) -->
+  <!-- <p class="data"><b>F/H:</b> <span id="fechaR"></span></p> -->
+
+  <!-- Nueva F/H de impresión -->
+  <p class="data"><b>F/H Impresión:</b> <span id="fecha_impresion"></span></p>
+
+  <!-- Tabla productos -->
   <table>
     <thead>
       <tr>
@@ -134,6 +135,7 @@
     <tbody id="tablaBody"></tbody>
   </table>
 
+  <!-- Totales -->
   <table class="totales">
     <tbody>
       <tr>
@@ -171,11 +173,13 @@
     return val ? val.split(",") : [];
   }
 
-  // Datos generales
+  // Datos generales desde AppSheet
   var nro_boleta = params.get("boleta") || "285826-P-002";
   var nro_mesa = params.get("mesa") || "Mesa 8";
   var cliente = params.get("cliente") || "Cliente Final";
   var direc = params.get("direccion") || "";
+
+  // F/H AppSheet (comentado en HTML)
   var fecha = params.get("fecha") || "14/09/2025";
   var hora = params.get("fecha_entrega") || "12:45:00";
 
@@ -195,7 +199,7 @@
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
   document.getElementById("nro_direccion_id").textContent = direc;
-  document.getElementById("fechaR").textContent = fecha + " " + hora;
+  // document.getElementById("fechaR").textContent = fecha + " " + hora;
   document.getElementById("total").textContent = total.toFixed(2);
   document.getElementById("efectivo").textContent = efectivo.toFixed(2);
   document.getElementById("devueltas").textContent = vuelto.toFixed(2);
@@ -214,6 +218,12 @@
       tablaBody.appendChild(row);
     }
   });
+
+  // Fecha/hora de impresión real
+  const ahora = new Date();
+  const fechaHoy = ahora.toLocaleDateString("es-PE");
+  const horaHoy = ahora.toLocaleTimeString("es-PE");
+  document.getElementById("fecha_impresion").textContent = fechaHoy + " " + horaHoy;
 </script>
 
 </body>
