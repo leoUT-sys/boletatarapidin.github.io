@@ -8,40 +8,35 @@
   <style>
     @page {
       size: A4;
-      margin: 15mm;
+      margin: 0;  /* Eliminé los márgenes para aprovechar toda la página */
     }
     body {
       font-family: Tahoma, Helvetica, sans-serif;
       margin: 0;
       font-size: 18pt;   /* Texto general más grande */
-      text-align: center;
+      text-align: left;  /* Alineación a la izquierda para todo el contenido */
     }
     .page {
       width: 100%;
-      max-width: 80mm;   /* simulamos ancho de ticket dentro del A4 */
-      margin: 0 auto;
+      height: 100%;  /* Asegura que la página ocupe toda la altura del A4 */
+      padding: 10mm;  /* Añadí un poco de relleno */
+      box-sizing: border-box;
     }
     .logo {
       text-align: center;
-      margin-bottom: 8mm;
+      margin-bottom: 12mm;
     }
     .logo img {
-      width: 40mm;   /* Mantener tamaño del logo */
+      width: 60mm;   /* Puedes ajustar el tamaño del logo según sea necesario */
       height: auto;
     }
     h3 {
-      font-size: 20pt;
-      margin: 4mm 0;
+      font-size: 22pt;
+      margin: 5mm 0;
     }
-    .nro_boleta, .nro_mesa {
-      font-size: 20pt;
-      margin: 3mm 0;
-      text-align: left;
-    }
-    .cliente, .direccion, .fecha_recepcion {
+    .nro_boleta, .nro_mesa, .cliente, .direccion, .fecha_recepcion {
       font-size: 18pt;
-      margin: 3mm 0;
-      text-align: left;
+      margin: 4mm 0;
     }
     .table {
       width: 100%;
@@ -50,7 +45,7 @@
     }
     .table th, .table td {
       font-size: 18pt;  /* Texto más grande en productos */
-      padding: 4px;
+      padding: 6px;
       text-align: left;
     }
     .table th {
@@ -61,10 +56,10 @@
       width: 100%;
       font-size: 20pt;
       border-top: 2px dashed black;
-      margin-top: 5mm;
+      margin-top: 6mm;
     }
     .totales td {
-      padding: 3mm 0;
+      padding: 4mm 0;
     }
     .totales .label {
       text-align: left;
@@ -73,7 +68,7 @@
       text-align: right;
     }
     .policy {
-      margin-top: 10mm;
+      margin-top: 15mm;
       text-align: center;
     }
     .small-text {
