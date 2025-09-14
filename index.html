@@ -113,7 +113,7 @@
 
   <!-- F/H impresión -->
   <div class="fecha_recepcion">
-    <b>F/H Impresión:</b> <span id="fecha_impresion"></span>
+     <span id="fecha_impresion"></span>
   </div>
   <!-- Si quieres mostrar la fecha de AppSheet, descomenta:
   <div class="fecha_recepcion">
@@ -191,7 +191,7 @@
 
   // Pintar datos
   document.getElementById("nro_boleta_id").textContent = "TICKET: " + nro_boleta;
-  document.getElementById("nro_mesa_id").textContent = "MESA: " + nro_mesa;
+  document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
   document.getElementById("nro_direccion_id").textContent = direc;
 
@@ -223,3 +223,4 @@
 
 </body>
 </html>
+
