@@ -57,9 +57,12 @@
       font-size: 20px; /* Ajustado */
       border-top: 2px dashed black;
       margin-top: 10px;
+      display: flex; /* Flexbox para una línea */
+      flex-wrap: nowrap;
     }
     .totales td {
       padding: 5px 0;
+      flex: 1; /* Distribuye las celdas de manera equitativa */
     }
     .totales .label {
       text-align: left; /* Alineación de los totales a la izquierda */
@@ -143,19 +146,16 @@
 
   <table class="totales">
     <tbody>
-      <tr>
+      <tr style="display: flex; justify-content: space-between; width: 100%;">
         <td class="label">TOTAL A PAGAR:</td>
         <td class="valor" id="total"></td>
-      </tr>
-      <tr>
+        
         <td class="label">CANCELA CON:</td>
         <td class="valor" id="efectivo"></td>
-      </tr>
-      <tr>
+
         <td class="label">VUELTO:</td>
         <td class="valor" id="devueltas"></td>
-      </tr>
-      <tr>
+
         <td class="label">FORMA DE PAGO:</td>
         <td class="valor" id="estado"></td>
       </tr>
