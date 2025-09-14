@@ -9,7 +9,7 @@
     body {
       font-family: Tahoma, Helvetica, sans-serif;
       margin: 0;
-      font-size: 16px;   /* tamaño base aumentado */
+      font-size: 30px;   /* tamaño base gigante */
       text-align: center;
     }
     #thermal-pos {
@@ -18,47 +18,52 @@
     }
     /* LOGO */
     .logo img {
-      width: 120px;   /* más grande */
+      width: 100%;   /* ocupa todo el ancho disponible */
+      max-width: 58mm;
       height: auto;
     }
     /* ENCABEZADO */
     h3 {
-      margin: 4px 0;
-      font-size: 18px; /* más visible */
+      margin: 10px 0;
+      font-size: 32px; 
     }
     .nro_boleta, .nro_mesa {
-      margin: 0;
-      font-size: 20px; /* destacado */
+      margin: 8px 0;
+      font-size: 40px; /* súper destacado */
     }
-    .cliente, .direccion, .fecha_recepcion {
-      font-size: 14px;
-      margin: 4px 0;
+    .cliente {
+      font-size: 34px;
+      margin: 6px 0;
+    }
+    .direccion, .fecha_recepcion {
+      font-size: 30px;
+      margin: 6px 0;
     }
     /* TABLA */
     .table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 6px;
+      margin-top: 12px;
     }
     .table th, .table td {
       text-align: left;
-      padding: 4px;
-      font-size: 14px;
+      padding: 8px;
+      font-size: 30px;
       word-wrap: break-word;
     }
     .table-header h2 {
       margin: 0;
-      font-size: 15px;
+      font-size: 32px;
     }
     /* TOTALES */
     .totales {
       width: 100%;
-      font-size: 14px;
-      border-top: 2px dashed black;
-      margin-top: 8px;
+      font-size: 34px;
+      border-top: 3px dashed black;
+      margin-top: 14px;
     }
     .totales td {
-      padding: 4px 0;
+      padding: 8px 0;
     }
     .totales .label {
       text-align: left;
@@ -68,10 +73,10 @@
     }
     /* POLÍTICA */
     .policy {
-      margin-top: 8px;
+      margin-top: 12px;
     }
     .small-text {
-      font-size: 12px;
+      font-size: 26px;
       line-height: 1.4;
     }
   </style>
@@ -79,18 +84,15 @@
 <body onload="window.print()" onfocus="window.close()">
 
 <script>
-  // Obtener parámetros de la URL
   const params = new URLSearchParams(window.location.search);
 
-  // Función para limpiar listas de AppSheet "{10, 12, 15}" → ["10","12","15"]
   function parseList(param) {
     let val = (param || "")
-                .replace(/[{}]/g, "") // quita llaves
-                .replace(/\s+/g, ""); // quita espacios
+                .replace(/[{}]/g, "")
+                .replace(/\s+/g, "");
     return val ? val.split(",") : [];
   }
 
-  // Variables principales
   var nro_boleta = params.get("boleta") || "---";
   var nro_mesa = params.get("mesa") || "---";
   var cliente = params.get("cliente") || "---";
@@ -103,12 +105,11 @@
   var total = parseFloat(params.get("total") || 0);
   var descuento = parseFloat(params.get("descuento") || 0);
   var devueltas = parseFloat(params.get("subtotal_desc") || 0);
-  var estado = params.get("estado") || "--"; // EFECTIVO, YAPE, PLIN
+  var estado = params.get("estado") || "--";
 
-  // Listas de AppSheet
   const cantidades = parseList(params.get("cantidades"));
   const servicios = parseList(params.get("servicios"));
-  const p_unit = parseList(params.get("p_unit")); // Precio total por fila
+  const p_unit = parseList(params.get("p_unit"));
 </script>
 
 <div id="thermal-pos">
@@ -180,7 +181,6 @@
 </div>
 
 <script>
-  // Insertar valores simples
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
@@ -188,13 +188,11 @@
   document.getElementById("fechaR").textContent = fecha;
   document.getElementById("hora").textContent = fecha_entrega;
 
-  // Insertar totales
   document.getElementById("total").textContent = total.toFixed(2);
   document.getElementById("efectivo").textContent = descuento.toFixed(2);
   document.getElementById("devueltas").textContent = devueltas.toFixed(2);
   document.getElementById("estado").textContent = estado;
 
-  // Insertar filas de productos
   const tablaBody = document.getElementById("tablaBody");
   servicios.forEach((serv, i) => {
     if (serv.trim() !== "") {
