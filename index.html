@@ -10,7 +10,7 @@
     }
     body {
       font-family: Tahoma, Helvetica, sans-serif;
-      font-size: 4mm; /* base más pequeño pero legible */
+      font-size: 3.6mm; /* un poco más pequeño que antes */
       margin: 0;
       color: black;
     }
@@ -21,34 +21,34 @@
     .center { text-align: center; }
     .right { text-align: right; }
     h1 {
-      font-size: 6mm; 
+      font-size: 5.5mm; 
       margin: 2mm 0 1mm 0;
       text-align: center;
     }
     h2 {
-      font-size: 5mm;
+      font-size: 4.8mm;
       margin: 0;
       text-align: center;
     }
     h3 {
-      font-size: 4.5mm;
+      font-size: 4.2mm;
       margin: 1mm 0 3mm 0;
       text-align: center;
     }
     .data {
       margin: 1mm 0;
-      font-size: 4mm;
+      font-size: 3.6mm;
     }
     .bold { font-weight: bold; }
     .ticket-num {
       text-align: center;
-      font-size: 6mm;
+      font-size: 5.5mm;
       font-weight: bold;
       margin: 2mm 0;
     }
     .mesa {
       text-align: center;
-      font-size: 6mm;
+      font-size: 5.5mm;
       font-weight: bold;
       margin: 2mm 0;
     }
@@ -58,7 +58,7 @@
       margin-top: 2mm;
     }
     th, td {
-      font-size: 4mm;
+      font-size: 3.6mm;
       padding: 0.5mm 0;
     }
     th {
@@ -67,7 +67,7 @@
     }
     .totales {
       width: 100%;
-      font-size: 4.2mm;
+      font-size: 4mm;
       border-top: 1px dashed black;
       margin-top: 3mm;
       font-weight: bold;
@@ -76,7 +76,7 @@
       padding: 0.5mm 0;
     }
     .total-grande {
-      font-size: 5mm;
+      font-size: 4.8mm;
       font-weight: bold;
     }
     .policy {
@@ -160,36 +160,34 @@
     return val ? val.split(",") : [];
   }
 
-  // Datos generales desde AppSheet
-  var nro_boleta = params.get("boleta") || "285826-P-002";
-  var nro_mesa = params.get("mesa") || "Mesa 8";
-  var cliente = params.get("cliente") || "Cliente Final";
-  var direc = params.get("direccion") || "";
-  var fecha = params.get("fecha") || "14/09/2025";
-  var hora = params.get("fecha_entrega") || "12:45:00";
+  // Datos desde AppSheet
+  var nro_boleta = params.get("boleta");
+  var nro_mesa = params.get("mesa");
+  var cliente = params.get("cliente");
+  var direc = params.get("direccion");
+  // var fecha = params.get("fecha"); // si deseas usarlo
+  // var hora = params.get("fecha_entrega"); // si deseas usarlo
 
-  // Totales desde AppSheet
-  var total = parseFloat(params.get("total") || 45);
-  var efectivo = parseFloat(params.get("pago") || 50);
-  var vuelto = parseFloat(params.get("vuelto") || 5);
-  var estado = params.get("estado") || "EFECTIVO";
+  var total = parseFloat(params.get("total") || 0);
+  var efectivo = parseFloat(params.get("pago") || 0);
+  var vuelto = parseFloat(params.get("vuelto") || 0);
+  var estado = params.get("estado");
 
-  // Listas de productos desde AppSheet
-  const cantidades = parseList(params.get("cantidades")) || ["2","1"];
-  const servicios = parseList(params.get("servicios")) || ["Aeropuerto","Broaster 1/4"];
-  const precios = parseList(params.get("p_unit")) || ["30.00","15.00"];
+  const cantidades = parseList(params.get("cantidades"));
+  const servicios = parseList(params.get("servicios"));
+  const precios = parseList(params.get("p_unit"));
 
   // Render en ticket
-  document.getElementById("nro_boleta_id").textContent = nro_boleta;
-  document.getElementById("nro_mesa_id").textContent = nro_mesa;
-  document.getElementById("cliente_id").textContent = cliente;
-  document.getElementById("nro_direccion_id").textContent = direc;
-  // document.getElementById("fechaR").textContent = fecha + " " + hora; // (si quieres usar la de AppSheet)
+  document.getElementById("nro_boleta_id").textContent = nro_boleta || "";
+  document.getElementById("nro_mesa_id").textContent = nro_mesa || "";
+  document.getElementById("cliente_id").textContent = cliente || "";
+  document.getElementById("nro_direccion_id").textContent = direc || "";
+  // document.getElementById("fechaR").textContent = fecha + " " + hora; // opcional
 
-  document.getElementById("total").textContent = total.toFixed(2);
-  document.getElementById("efectivo").textContent = efectivo.toFixed(2);
-  document.getElementById("devueltas").textContent = vuelto.toFixed(2);
-  document.getElementById("estado").textContent = estado;
+  document.getElementById("total").textContent = total ? total.toFixed(2) : "";
+  document.getElementById("efectivo").textContent = efectivo ? efectivo.toFixed(2) : "";
+  document.getElementById("devueltas").textContent = vuelto ? vuelto.toFixed(2) : "";
+  document.getElementById("estado").textContent = estado || "";
 
   // F/H Impresión en tiempo real
   const ahora = new Date();
@@ -203,7 +201,7 @@
     if (serv.trim() !== "") {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${cantidades[i] || 0}</td>
+        <td>${cantidades[i] || ""}</td>
         <td>${serv}</td>
         <td class="right">${Number(precios[i] || 0).toFixed(2)}</td>
       `;
