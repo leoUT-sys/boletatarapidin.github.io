@@ -1,215 +1,204 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ticket - Factura</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket de Compra en A4</title>
   <style>
-    /* Configuración de página en A4 (ISO) */
-    @page {
-      size: A4;
-      margin: 0;
-    }
-
     body {
-      margin: 0;
       font-family: Tahoma, Helvetica, sans-serif;
-      font-size: 16pt;   /* Texto general más grande */
-      text-align: center;
+      margin: 0;
+      font-size: 12px;
     }
-
+    .page {
+      width: 210mm;   /* Ancho hoja A4 */
+      height: 297mm;  /* Alto hoja A4 */
+      margin: 0 auto;
+      position: relative;
+    }
     #thermal-pos {
-      width: 100%;          
-      max-width: 100%;      
-      margin: 0 auto;
+      width: 58mm;   /* Ancho del ticket */
+      padding: 2mm;
       box-sizing: border-box;
-      padding: 10mm;        /* margen interno */
     }
-
-    .logo {
-      text-align: center;
-      margin-bottom: 10mm;
-    }
-
     .logo img {
-      width: 30mm;   /* tamaño fijo del logo */
+      width: 100%;
+      max-width: 58mm;
       height: auto;
-      display: block;
-      margin: 0 auto;
     }
-
-    h3 {
-      font-size: 20pt;
-      margin: 5mm 0;
+    h3, h2, h1 {
+      margin: 2px 0;
+      font-size: 12px;
+      text-align: center;
     }
-
     .nro_boleta, .nro_mesa {
-      font-size: 18pt;
-      margin: 3mm 0;
+      font-size: 14px;
+      text-align: left;
+      margin: 2px 0;
     }
-
     .cliente, .direccion, .fecha_recepcion {
-      font-size: 16pt;
-      margin: 3mm 0;
+      font-size: 12px;
+      margin: 2px 0;
+      text-align: left;
+      word-wrap: break-word;
     }
-
     .table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10mm;
+      margin-top: 5px;
     }
-
     .table th, .table td {
-      border: 1px solid black;
-      padding: 6px 8px;
-      font-size: 14pt;
       text-align: left;
+      padding: 2px;
+      font-size: 12px;
+      word-wrap: break-word;
     }
-
+    .table th {
+      border-bottom: 1px dashed black;
+    }
     .totales {
       width: 100%;
-      font-size: 16pt;
-      margin-top: 10mm;
-      border-top: 2px solid black;
+      font-size: 12px;
+      border-top: 1px dashed black;
+      margin-top: 5px;
     }
-
     .totales td {
-      padding: 5px 0;
+      padding: 2px 0;
     }
-
     .totales .label {
-      text-align: right;
-      font-weight: bold;
-      padding-right: 10mm;
+      text-align: left;
     }
-
     .totales .valor {
       text-align: right;
-      width: 40mm;
     }
-
     .policy {
-      margin-top: 15mm;
+      margin-top: 5px;
       text-align: center;
     }
-
     .small-text {
-      font-size: 12pt;
-      line-height: 1.6;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    /* Configuración para impresión A4 */
+    @page {
+      size: A4;
+      margin: 10mm;
     }
   </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
-<script>
-  const params = new URLSearchParams(window.location.search);
+<div class="page">
+  <div id="thermal-pos">
+    <div class="label" style="text-align:center;">
+      <div class="logo">
+        <img src="logo.png" alt="Mi Logo">
+      </div>
+      <h3>EL RAPIDIN<br> Caldos - Chifa - Broaster <br> San Martin de Pangoa</h3>
+    </div>
 
-  function parseList(param) {
-    let val = (param || "").replace(/[{}]/g, "").replace(/\s+/g, "");
-    return val ? val.split(",") : [];
-  }
+    <div class="label">
+      <p class="nro_boleta"><b>TICKET:</b> <span id="nro_boleta_id"></span></p>
+      <p class="nro_mesa"><b>MESA:</b> <span id="nro_mesa_id"></span></p>
+      <p class="cliente"><b>Cliente:</b> <span id="cliente_id"></span></p>
+      <p class="direccion" id="nro_direccion_id"></p>
+    </div>
 
-  // Datos por defecto si no vienen en URL
-  var nro_boleta = params.get("boleta") || "285826-P-002";
-  var nro_mesa = params.get("mesa") || "Mesa 8";
-  var cliente = params.get("cliente") || "Cliente Final";
-  var direc = params.get("direccion") || "San Martín de Pangoa";
-  var fecha = params.get("fecha") || "09/11/2025 18:40:30";
-  var fecha_entrega = params.get("fecha_entrega") || "";
-  var total = parseFloat(params.get("total") || 17);
-  var pago = parseFloat(params.get("pago") || 50);
-  var vuelto = parseFloat(params.get("vuelto") || 33);
-  var estado = params.get("estado") || "EFECTIVO";
+    <div class="label">
+      <p class="fecha_recepcion">
+        <b>FECHA:</b> <span id="fechaR"></span> <span id="hora"></span>
+      </p>
+    </div>
 
-  const cantidades = parseList(params.get("cantidades")) || ["1","1"];
-  const servicios = parseList(params.get("servicios")) || ["Aeropuerto de pollo","Chaufa de pollo"];
-  const precios = parseList(params.get("p_unit")) || ["9.00","8.00"];
-</script>
+    <table class="table">
+      <thead>
+        <tr class="table-header">
+          <th>Cant</th>
+          <th>Descripción</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="tablaBody"></tbody>
+    </table>
 
-<div id="thermal-pos">
-  <div class="logo">
-    <!-- Reemplaza logo.png por tu logo real -->
-    <img src="logo.png" alt="Logo">
-  </div>
+    <table class="totales">
+      <tbody>
+        <tr>
+          <td class="label">TOTAL A PAGAR:</td>
+          <td class="valor" id="total"></td>
+        </tr>
+        <tr>
+          <td class="label">CANCELA CON:</td>
+          <td class="valor" id="efectivo"></td>
+        </tr>
+        <tr>
+          <td class="label">VUELTO:</td>
+          <td class="valor" id="devueltas"></td>
+        </tr>
+        <tr>
+          <td class="label">FORMA DE PAGO:</td>
+          <td class="valor" id="estado"></td>
+        </tr>
+      </tbody>
+    </table>
 
-  <h3>EL RAPIDIN<br>Caldos - Chifa - Broaster<br>San Martín de Pangoa</h3>
-
-  <div>
-    <b>TICKET:</b>
-    <div class="nro_boleta" id="nro_boleta_id"></div>
-    <div class="nro_mesa" id="nro_mesa_id"></div>
-    <div class="cliente">Cliente: <span id="cliente_id"></span></div>
-    <div class="direccion" id="nro_direccion_id"></div>
-  </div>
-
-  <div>
-    <p class="fecha_recepcion">
-      FECHA DE RECEPCION:<br>
-      <b id="fechaR"></b> <b id="hora"></b>
-    </p>
-  </div>
-
-  <table class="table">
-    <tbody id="tablaBody">
-      <tr>
-        <th>Cant</th>
-        <th>Descripción</th>
-        <th>Total</th>
-      </tr>
-    </tbody>
-  </table>
-
-  <table class="totales">
-    <tbody>
-      <tr>
-        <td class="label">TOTAL A PAGAR:</td>
-        <td class="valor" id="total"></td>
-      </tr>
-      <tr>
-        <td class="label">CANCELA CON:</td>
-        <td class="valor" id="efectivo"></td>
-      </tr>
-      <tr>
-        <td class="label">VUELTO:</td>
-        <td class="valor" id="devueltas"></td>
-      </tr>
-      <tr>
-        <td class="label">FORMA DE PAGO:</td>
-        <td class="valor" id="estado"></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="policy">
-    <p><b>IMPORTANTE:</b></p>
-    <p class="small-text">
-      Comprobante informativo – sin validez fiscal.<br/>
-      Su preferencia nos motiva a seguir brindando lo mejor.
-    </p>
+    <div class="policy">
+      <p class="small-text">
+        * Comprobante informativo – sin validez fiscal *<br/>
+        ¡Gracias por su preferencia! 🙌
+      </p>
+    </div>
   </div>
 </div>
 
 <script>
+  const params = new URLSearchParams(window.location.search);
+
+  function parseList(param) {
+    let val = (param || "")
+                .replace(/[{}]/g, "")
+                .replace(/\s+/g, "");
+    return val ? val.split(",") : [];
+  }
+
+  var nro_boleta = params.get("boleta") || "---";
+  var nro_mesa = params.get("mesa") || "---";
+  var cliente = params.get("cliente") || "---";
+  var direc = params.get("direccion") || "---";
+  var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
+  var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
+
+  var total = parseFloat(params.get("total") || 0);
+  var descuento = parseFloat(params.get("descuento") || 0);
+  var devueltas = parseFloat(params.get("subtotal_desc") || 0);
+  var estado = params.get("estado") || "--";
+
+  const cantidades = parseList(params.get("cantidades"));
+  const servicios = parseList(params.get("servicios"));
+  const p_unit = parseList(params.get("p_unit"));
+
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
   document.getElementById("nro_direccion_id").textContent = direc;
   document.getElementById("fechaR").textContent = fecha;
   document.getElementById("hora").textContent = fecha_entrega;
+
   document.getElementById("total").textContent = total.toFixed(2);
-  document.getElementById("efectivo").textContent = pago.toFixed(2);
-  document.getElementById("devueltas").textContent = vuelto.toFixed(2);
+  document.getElementById("efectivo").textContent = descuento.toFixed(2);
+  document.getElementById("devueltas").textContent = devueltas.toFixed(2);
   document.getElementById("estado").textContent = estado;
 
   const tablaBody = document.getElementById("tablaBody");
   servicios.forEach((serv, i) => {
-    if ((serv || "").trim() !== "") {
+    if (serv.trim() !== "") {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${cantidades[i] || 0}</td>
         <td>${serv}</td>
-        <td style="text-align:right;">${Number(precios[i] || 0).toFixed(2)}</td>
+        <td>${Number(p_unit[i] || 0).toFixed(2)}</td>
       `;
       tablaBody.appendChild(row);
     }
