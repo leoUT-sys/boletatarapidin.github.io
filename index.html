@@ -9,8 +9,8 @@
       margin: 2mm;
     }
     body {
-      font-family: "Courier New", monospace;
-      font-size: 4.5mm; /* texto base más grande */
+      font-family: Tahoma, Helvetica, sans-serif;
+      font-size: 4mm; /* base más pequeño pero legible */
       margin: 0;
       color: black;
     }
@@ -21,39 +21,34 @@
     .center { text-align: center; }
     .right { text-align: right; }
     h1 {
-      font-size: 7mm; /* título más grande */
-      margin: 1mm 0;
+      font-size: 6mm; 
+      margin: 2mm 0 1mm 0;
       text-align: center;
     }
     h2 {
-      font-size: 6mm;
+      font-size: 5mm;
       margin: 0;
       text-align: center;
     }
     h3 {
-      font-size: 5.5mm;
+      font-size: 4.5mm;
       margin: 1mm 0 3mm 0;
       text-align: center;
     }
-    .logo {
-      width: 40mm;
-      display: block;
-      margin: 0 auto 2mm auto;
-    }
     .data {
-      margin: 1.5mm 0;
-      font-size: 5mm; /* info general más grande */
+      margin: 1mm 0;
+      font-size: 4mm;
     }
     .bold { font-weight: bold; }
     .ticket-num {
       text-align: center;
-      font-size: 7mm;
+      font-size: 6mm;
       font-weight: bold;
       margin: 2mm 0;
     }
     .mesa {
       text-align: center;
-      font-size: 7mm;
+      font-size: 6mm;
       font-weight: bold;
       margin: 2mm 0;
     }
@@ -63,8 +58,8 @@
       margin-top: 2mm;
     }
     th, td {
-      font-size: 5mm;
-      padding: 1mm 0;
+      font-size: 4mm;
+      padding: 0.5mm 0;
     }
     th {
       border-bottom: 1px dashed black;
@@ -72,22 +67,22 @@
     }
     .totales {
       width: 100%;
-      font-size: 5.5mm;
+      font-size: 4.2mm;
       border-top: 1px dashed black;
       margin-top: 3mm;
       font-weight: bold;
     }
     .totales td {
-      padding: 1mm 0;
+      padding: 0.5mm 0;
     }
     .total-grande {
-      font-size: 7mm;
+      font-size: 5mm;
       font-weight: bold;
     }
     .policy {
       margin-top: 4mm;
       text-align: center;
-      font-size: 4.8mm;
+      font-size: 3mm;
       line-height: 1.4;
     }
   </style>
@@ -95,10 +90,6 @@
 <body onload="window.print()" onfocus="window.close()">
 
 <div class="ticket">
-  <!-- Logo -->
-  <img src="logo.png" alt="Logo" class="logo">
-
-  <!-- Encabezado -->
   <h1>EL RAPIDIN</h1>
   <h2>Caldos - Chifa - Broaster</h2>
   <h3>San Martín de Pangoa</h3>
@@ -117,13 +108,12 @@
 
   <p class="data" id="nro_direccion_id"></p>
 
-  <!-- F/H enviado desde AppSheet (deshabilitado por defecto) -->
+  <!-- Línea con F/H enviado desde AppSheet (comentada) -->
   <!-- <p class="data"><b>F/H:</b> <span id="fechaR"></span></p> -->
 
-  <!-- Nueva F/H de impresión -->
+  <!-- Nueva línea con fecha/hora de impresión -->
   <p class="data"><b>F/H Impresión:</b> <span id="fecha_impresion"></span></p>
 
-  <!-- Tabla productos -->
   <table>
     <thead>
       <tr>
@@ -135,7 +125,6 @@
     <tbody id="tablaBody"></tbody>
   </table>
 
-  <!-- Totales -->
   <table class="totales">
     <tbody>
       <tr>
@@ -158,7 +147,7 @@
   </table>
 
   <div class="policy">
-    * Comprobante informativo *<br>
+    * Comprobante solo informativo no sustituye boleta ni factura *<br>
     ¡Gracias por su preferencia!
   </div>
 </div>
@@ -167,9 +156,7 @@
   const params = new URLSearchParams(window.location.search);
 
   function parseList(param) {
-    let val = (param || "")
-                .replace(/[{}]/g, "")
-                .replace(/\s+/g, "");
+    let val = (param || "").replace(/[{}]/g, "").replace(/\s+/g, "");
     return val ? val.split(",") : [];
   }
 
@@ -178,32 +165,37 @@
   var nro_mesa = params.get("mesa") || "Mesa 8";
   var cliente = params.get("cliente") || "Cliente Final";
   var direc = params.get("direccion") || "";
-
-  // F/H AppSheet (comentado en HTML)
   var fecha = params.get("fecha") || "14/09/2025";
   var hora = params.get("fecha_entrega") || "12:45:00";
 
-  // Totales
+  // Totales desde AppSheet
   var total = parseFloat(params.get("total") || 45);
   var efectivo = parseFloat(params.get("pago") || 50);
   var vuelto = parseFloat(params.get("vuelto") || 5);
   var estado = params.get("estado") || "EFECTIVO";
 
-  // Listas de productos
+  // Listas de productos desde AppSheet
   const cantidades = parseList(params.get("cantidades")) || ["2","1"];
   const servicios = parseList(params.get("servicios")) || ["Aeropuerto","Broaster 1/4"];
   const precios = parseList(params.get("p_unit")) || ["30.00","15.00"];
 
-  // Render de datos en el ticket
+  // Render en ticket
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
   document.getElementById("nro_direccion_id").textContent = direc;
-  // document.getElementById("fechaR").textContent = fecha + " " + hora;
+  // document.getElementById("fechaR").textContent = fecha + " " + hora; // (si quieres usar la de AppSheet)
+
   document.getElementById("total").textContent = total.toFixed(2);
   document.getElementById("efectivo").textContent = efectivo.toFixed(2);
   document.getElementById("devueltas").textContent = vuelto.toFixed(2);
   document.getElementById("estado").textContent = estado;
+
+  // F/H Impresión en tiempo real
+  const ahora = new Date();
+  const fechaHoy = ahora.toLocaleDateString("es-PE");
+  const horaHoy = ahora.toLocaleTimeString("es-PE");
+  document.getElementById("fecha_impresion").textContent = fechaHoy + " " + horaHoy;
 
   // Generar tabla de productos
   const tablaBody = document.getElementById("tablaBody");
@@ -218,12 +210,6 @@
       tablaBody.appendChild(row);
     }
   });
-
-  // Fecha/hora de impresión real
-  const ahora = new Date();
-  const fechaHoy = ahora.toLocaleDateString("es-PE");
-  const horaHoy = ahora.toLocaleTimeString("es-PE");
-  document.getElementById("fecha_impresion").textContent = fechaHoy + " " + horaHoy;
 </script>
 
 </body>
