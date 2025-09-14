@@ -3,80 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=58mm, initial-scale=1.0">
-  <title>Ticket de Compra</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket / Factura</title>
   <style>
-    body {
-      font-family: Tahoma, Helvetica, sans-serif;
+    /* --- Ticket en rollo 58mm --- */
+    @page {
+      size: 58mm auto;
       margin: 0;
-      font-size: 18px;   /* Ajuste del tamaño de la fuente */
-      text-align: left; /* Alineación a la izquierda */
     }
-    #thermal-pos {
-      width: 58mm;   /* Ancho del papel para impresora térmica */
+
+    body {
+      width: 58mm;
       margin: 0 auto;
+      font-family: Tahoma, Helvetica, sans-serif;
+      font-size: 20px;
+      text-align: center;
     }
-    .logo img {
+
+    #thermal-pos {
       width: 100%;
-      max-width: 58mm;
-      height: auto;
     }
+
     h3 {
       margin: 5px 0;
       font-size: 18px;
-      text-align: left; /* Alineación del encabezado a la izquierda */
     }
+
     .nro_boleta, .nro_mesa {
-      margin: 5px 0;
-      font-size: 20px; /* Tamaño ajustado */
-      text-align: left; /* Alineación de los números a la izquierda */
-    }
-    .cliente {
       font-size: 20px;
       margin: 5px 0;
-      text-align: left; /* Alineación del cliente a la izquierda */
     }
-    .direccion, .fecha_recepcion {
+
+    .cliente, .direccion, .fecha_recepcion {
       font-size: 18px;
       margin: 5px 0;
-      text-align: left; /* Alineación de la dirección y fecha a la izquierda */
     }
+
     .table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
     }
+
     .table th, .table td {
-      text-align: left;
+      text-align: center;
       padding: 5px;
-      font-size: 18px; /* Tamaño ajustado */
-      word-wrap: break-word;
+      font-size: 18px;
     }
+
     .totales {
       width: 100%;
-      font-size: 20px; /* Ajustado */
+      font-size: 20px;
       border-top: 2px dashed black;
       margin-top: 10px;
-      display: flex; /* Flexbox para una línea */
-      flex-wrap: nowrap;
+      text-align: center;
     }
+
     .totales td {
       padding: 5px 0;
-      flex: 1; /* Distribuye las celdas de manera equitativa */
     }
-    .totales .label {
-      text-align: left; /* Alineación de los totales a la izquierda */
-    }
-    .totales .valor {
-      text-align: right; /* Alineación de los valores a la derecha */
-    }
+
     .policy {
       margin-top: 10px;
     }
+
     .small-text {
       font-size: 16px;
       line-height: 1.4;
-      text-align: left; /* Alineación del texto de la política a la izquierda */
+    }
+
+    /* --- FACTURA en hoja A4 --- */
+    @media print and (width: 210mm) and (height: 297mm) {
+      @page {
+        size: A4;
+        margin: 15mm;
+      }
+
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-size: 16pt;
+        text-align: left;
+      }
+
+      #thermal-pos {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+      }
+
+      .logo {
+        text-align: center;
+        margin-bottom: 10mm;
+      }
+
+      .logo img {
+        max-width: 80mm;
+        height: auto;
+      }
+
+      h3 {
+        font-size: 22pt;
+        text-align: center;
+        margin-bottom: 10mm;
+        border-bottom: 2px solid #000;
+        padding-bottom: 5mm;
+      }
+
+      .nro_boleta, .nro_mesa, .cliente, .direccion, .fecha_recepcion {
+        font-size: 14pt;
+        margin: 4mm 0;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10mm;
+      }
+
+      .table th, .table td {
+        border: 1px solid black;
+        padding: 6px 10px;
+        font-size: 14pt;
+        text-align: left;
+      }
+
+      .totales {
+        width: 100%;
+        font-size: 16pt;
+        margin-top: 15mm;
+        border-top: 2px solid black;
+      }
+
+      .totales td {
+        padding: 5px 0;
+      }
+
+      .totales .label {
+        text-align: right;
+        font-weight: bold;
+        padding-right: 10mm;
+      }
+
+      .totales .valor {
+        text-align: right;
+        width: 40mm;
+      }
+
+      .policy {
+        margin-top: 20mm;
+        text-align: center;
+      }
+
+      .small-text {
+        font-size: 12pt;
+        line-height: 1.5;
+      }
     }
   </style>
 </head>
@@ -86,9 +169,7 @@
   const params = new URLSearchParams(window.location.search);
 
   function parseList(param) {
-    let val = (param || "")
-                .replace(/[{}]/g, "")
-                .replace(/\s+/g, "");
+    let val = (param || "").replace(/[{}]/g, "").replace(/\s+/g, "");
     return val ? val.split(",") : [];
   }
 
@@ -98,28 +179,23 @@
   var direc = params.get("direccion") || "---";
   var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
   var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
-  var domi = parseFloat(params.get("domi") || 0);
-  var propina = parseFloat(params.get("propina") || 0);
-
   var total = parseFloat(params.get("total") || 0);
-  var descuento = parseFloat(params.get("descuento") || 0);
-  var devueltas = parseFloat(params.get("subtotal_desc") || 0);
+  var pago = parseFloat(params.get("pago") || 0);
+  var vuelto = parseFloat(params.get("vuelto") || 0);
   var estado = params.get("estado") || "--";
 
   const cantidades = parseList(params.get("cantidades"));
   const servicios = parseList(params.get("servicios"));
-  const p_unit = parseList(params.get("p_unit"));
+  const precios = parseList(params.get("p_unit"));
 </script>
 
 <div id="thermal-pos">
-  <div class="label">
-    <div class="logo" style="text-align:left;">
-      <img src="logo.png" alt="Mi Logo">
-    </div>
-    <h3>EL RAPIDIN<br> Caldos - Chifa - Broaster <br> San Martin de Pangoa</h3>
+  <div class="logo">
+    <img src="logo.png" alt="Mi Logo">
   </div>
+  <h3>EL RAPIDIN<br> Caldos - Chifa - Broaster <br> San Martin de Pangoa</h3>
 
-  <div class="label">
+  <div>
     <b>TICKET:</b>
     <h1 class="nro_boleta" id="nro_boleta_id"></h1>
     <h1 class="nro_mesa" id="nro_mesa_id"></h1>
@@ -127,35 +203,38 @@
     <h3 class="direccion" id="nro_direccion_id"></h3>
   </div>
 
-  <div class="label">
+  <div>
     <p class="fecha_recepcion">
-      FECHA DE RECEPCION: <br>
+      FECHA DE RECEPCION:<br>
       <b id="fechaR"></b> <b id="hora"></b>
     </p>
   </div>
 
   <table class="table">
     <tbody id="tablaBody">
-      <tr class="table-header">
-        <th><h2>Cant</h2></th>
-        <th><h2>Descripción</h2></th>
-        <th><h2>Total</h2></th>
+      <tr>
+        <th>Cant</th>
+        <th>Descripción</th>
+        <th>Total</th>
       </tr>
     </tbody>
   </table>
 
   <table class="totales">
     <tbody>
-      <tr style="display: flex; justify-content: space-between; width: 100%;">
+      <tr>
         <td class="label">TOTAL A PAGAR:</td>
         <td class="valor" id="total"></td>
-        
+      </tr>
+      <tr>
         <td class="label">CANCELA CON:</td>
         <td class="valor" id="efectivo"></td>
-
+      </tr>
+      <tr>
         <td class="label">VUELTO:</td>
         <td class="valor" id="devueltas"></td>
-
+      </tr>
+      <tr>
         <td class="label">FORMA DE PAGO:</td>
         <td class="valor" id="estado"></td>
       </tr>
@@ -178,10 +257,9 @@
   document.getElementById("nro_direccion_id").textContent = direc;
   document.getElementById("fechaR").textContent = fecha;
   document.getElementById("hora").textContent = fecha_entrega;
-
   document.getElementById("total").textContent = total.toFixed(2);
-  document.getElementById("efectivo").textContent = descuento.toFixed(2);
-  document.getElementById("devueltas").textContent = devueltas.toFixed(2);
+  document.getElementById("efectivo").textContent = pago.toFixed(2);
+  document.getElementById("devueltas").textContent = vuelto.toFixed(2);
   document.getElementById("estado").textContent = estado;
 
   const tablaBody = document.getElementById("tablaBody");
@@ -191,7 +269,7 @@
       row.innerHTML = `
         <td>${cantidades[i] || 0}</td>
         <td>${serv}</td>
-        <td>${Number(p_unit[i] || 0).toFixed(2)}</td>
+        <td>${Number(precios[i] || 0).toFixed(2)}</td>
       `;
       tablaBody.appendChild(row);
     }
