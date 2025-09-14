@@ -1,179 +1,129 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Ticket 58mm</title>
-  <style>
-    @page {
-      size: 58mm auto;
-      margin: 2mm;
-    }
-    body {
-      font-family: "Courier New", monospace;
-      font-size: 13pt; /* base más grande para leer mejor */
-      margin: 0;
-      color: black;
-    }
-    .ticket {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .center { text-align: center; }
-    .right { text-align: right; }
-    h1 {
-      font-size: 16pt;
-      margin: 2mm 0 1mm 0;
-      text-align: center;
-    }
-    h2 {
-      font-size: 14pt;
-      margin: 0;
-      text-align: center;
-    }
-    h3 {
-      font-size: 13pt;
-      margin: 1mm 0 3mm 0;
-      text-align: center;
-    }
-    .data {
-      margin: 1mm 0;
-      font-size: 13pt;
-    }
-    .bold { font-weight: bold; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 2mm;
-    }
-    th, td {
-      font-size: 13pt;
-      padding: 2px 0;
-    }
-    th {
-      border-bottom: 1px solid black;
-      text-align: center;
-    }
-    .totales {
-      width: 100%;
-      font-size: 14pt;
-      border-top: 1px solid black;
-      margin-top: 3mm;
-      font-weight: bold;
-    }
-    .totales td {
-      padding: 2px 0;
-    }
-    .total-grande {
-      font-size: 15pt;
-      font-weight: bold;
-    }
-    .policy {
-      margin-top: 5mm;
-      text-align: center;
-      font-size: 12pt;
-      line-height: 1.3;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Ticket</title>
+<style>
+  body {
+    font-family: tahoma, Helvetica, sans-serif;
+    margin: 0;
+    font-size: 3mm;
+    text-align: center;
+  }
+  #ticket {
+    max-width: 58mm;
+    margin: auto;
+  }
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2mm;
+  }
+  .table th, .table td {
+    text-align: left;
+    padding: 1mm;
+  }
+  .table-header h2, .table td h2 {
+    margin: 0;
+    font-weight: bold;
+  }
+  .totales {
+    width: 100%;
+    font-size: 3mm;
+    margin-top: 2mm;
+    border-top: 1px dashed black;
+  }
+  .totales td {
+    padding: 0.5mm 0;
+  }
+  .totales .label {
+    text-align: left;
+  }
+  .totales .valor {
+    text-align: right;
+  }
+  .comentario {
+    font-size: 2.5mm;
+    font-style: italic;
+  }
+</style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
-
-<div class="ticket">
-  <h1>EL RAPIDIN</h1>
-  <h2>Caldos - Chifa - Broaster</h2>
-  <h3>San Martín de Pangoa</h3>
-
-  <p class="data"><b>TICKET:</b> <span id="nro_boleta_id"></span></p>
-  <p class="data"><b>Cliente:</b> <span id="cliente_id"></span></p>
-  <p class="data bold" id="nro_mesa_id"></p>
-  <p class="data" id="nro_direccion_id"></p>
-  <p class="data"><b>F/H:</b> <span id="fechaR"></span></p>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Cant</th>
-        <th>Descripción</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="tablaBody"></tbody>
-  </table>
-
-  <table class="totales">
-    <tbody>
-      <tr>
-        <td class="total-grande">TOTAL:</td>
-        <td class="right total-grande" id="total"></td>
-      </tr>
-      <tr>
-        <td>CANCELA:</td>
-        <td class="right" id="efectivo"></td>
-      </tr>
-      <tr>
-        <td>VUELTO:</td>
-        <td class="right" id="devueltas"></td>
-      </tr>
-      <tr>
-        <td>PAGO:</td>
-        <td class="right" id="estado"></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="policy">
-    * Comprobante informativo *<br>
-    ¡Gracias por su preferencia!
-  </div>
-</div>
 
 <script>
   const params = new URLSearchParams(window.location.search);
 
   function parseList(param) {
-    let val = (param || "")
-                .replace(/[{}]/g, "")
-                .replace(/\s+/g, "");
+    let val = (param || "").replace(/[{}]/g, "").trim();
     return val ? val.split(",") : [];
   }
 
-  // Datos generales
-  var nro_boleta = params.get("boleta") || "285826-P-002";
-  var nro_mesa = params.get("mesa") || "Mesa 8";
-  var cliente = params.get("cliente") || "Cliente Final";
-  var direc = params.get("direccion") || "";
-  var fecha = params.get("fecha") || "14/09/2025";
-  var hora = params.get("fecha_entrega") || "12:45:00";
+  var nro_boleta = params.get("boleta") || "---";
+  var cliente = params.get("cliente") || "---";
+  var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
 
-  // Totales
-  var total = parseFloat(params.get("total") || 45);
-  var efectivo = parseFloat(params.get("pago") || 50);
-  var vuelto = parseFloat(params.get("vuelto") || 5);
-  var estado = params.get("estado") || "EFECTIVO";
+  const cantidades = parseList(params.get("cantidades"));
+  const productos = parseList(params.get("servicios"));
+  const precios = parseList(params.get("precios"));
+  const comentarios = parseList(params.get("comentarios"));
 
-  // Listas de productos
-  const cantidades = parseList(params.get("cantidades")) || ["2","1"];
-  const servicios = parseList(params.get("servicios")) || ["Aeropuerto","Broaster 1/4"];
-  const precios = parseList(params.get("p_unit")) || ["30.00","15.00"];
+  const total_general = params.get("total") || "0";
+</script>
 
-  // Render de datos en el ticket
+<div id="ticket">
+  <!-- Título centrado -->
+  <h2>TICKET</h2>
+  <!-- Número de boleta debajo en negrita -->
+  <p><b>N° <span id="nro_boleta_id"></span></b></p>
+
+  <p><b>Cliente:</b> <span id="cliente_id"></span></p>
+  <p><b>Fecha:</b> <span id="fechaR"></span></p>
+
+  <table class="table">
+    <tbody id="tablaBody">
+      <!-- Línea arriba del encabezado -->
+      <tr>
+        <td colspan="3" style="border-top:1px dashed black;"></td>
+      </tr>
+      <tr class="table-header">
+        <th><h2>Cant</h2></th>
+        <th><h2>Descripción</h2></th>
+        <th><h2>Precio</h2></th>
+      </tr>
+      <!-- Línea abajo del encabezado -->
+      <tr>
+        <td colspan="3" style="border-bottom:1px dashed black;"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="totales">
+    <tbody>
+      <tr>
+        <td class="label"><h3>TOTAL:</h3></td>
+        <td class="valor"><h3 id="total_general"></h3></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
-  document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
-  document.getElementById("nro_direccion_id").textContent = direc;
-  document.getElementById("fechaR").textContent = fecha + " " + hora;
-  document.getElementById("total").textContent = total.toFixed(2);
-  document.getElementById("efectivo").textContent = efectivo.toFixed(2);
-  document.getElementById("devueltas").textContent = vuelto.toFixed(2);
-  document.getElementById("estado").textContent = estado;
+  document.getElementById("fechaR").textContent = fecha;
+  document.getElementById("total_general").textContent = "S/ " + Number(total_general).toFixed(2);
 
-  // Generar tabla de productos
   const tablaBody = document.getElementById("tablaBody");
-  servicios.forEach((serv, i) => {
-    if (serv.trim() !== "") {
+  productos.forEach((prod, i) => {
+    if (prod.trim() !== "") {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${cantidades[i] || 0}</td>
-        <td>${serv}</td>
-        <td class="right">${Number(precios[i] || 0).toFixed(2)}</td>
+        <td><h2>${cantidades[i] || 0}</h2></td>
+        <td>
+          <h2>${prod}</h2>
+          <div class="comentario">${comentarios[i] && comentarios[i].trim() !== "" ? comentarios[i] : "-"}</div>
+        </td>
+        <td><h2>S/ ${(precios[i] || 0)}</h2></td>
       `;
       tablaBody.appendChild(row);
     }
