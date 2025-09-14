@@ -2,79 +2,85 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket A4</title>
+  <title>Ticket 58mm</title>
   <style>
-    @page { size: A4 portrait; margin: 15mm; }
     body {
-      font-family: "Lucida Console", "Courier New", monospace;
-      font-size: 38pt; /* 🔥 Fuente base muy grande */
+      font-family: "Courier New", monospace;
+      font-size: 12pt;
       margin: 0;
       padding: 0;
+      width: 58mm;
       color: black;
-      text-align: center;
     }
     .ticket {
       width: 100%;
-      max-width: 750px;
-      margin: auto;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+    .center {
+      text-align: center;
+    }
+    .right {
+      text-align: right;
     }
     h1 {
-      font-size: 52pt; /* 🔥 Título principal */
-      margin: 15px 0 5px 0;
+      font-size: 16pt;
+      margin: 2px 0;
+      text-align: center;
     }
     h2 {
-      font-size: 46pt;
-      margin: 10px 0;
+      font-size: 12pt;
+      margin: 2px 0;
+      text-align: center;
     }
     h3 {
-      font-size: 40pt;
-      margin: 10px 0 20px 0;
+      font-size: 11pt;
+      margin: 2px 0;
+      text-align: center;
     }
     .data {
-      font-size: 38pt;
-      margin: 8px 0;
-      text-align: left;
+      font-size: 11pt;
+      margin: 2px 0;
+    }
+    .bold {
+      font-weight: bold;
     }
     table {
       width: 100%;
-      font-size: 38pt;
-      margin-top: 20px;
       border-collapse: collapse;
+      margin-top: 4px;
+    }
+    th, td {
+      font-size: 11pt;
+      padding: 2px 0;
     }
     th {
-      border-bottom: 4px solid black;
-      padding-bottom: 8px;
+      border-bottom: 1px solid black;
       text-align: center;
     }
-    td {
-      padding: 10px 0;
-      text-align: left;
-    }
-    td:last-child {
-      text-align: right;
-    }
     .totales {
-      margin-top: 25px;
-      border-top: 4px solid black;
-      font-size: 40pt;
+      width: 100%;
+      font-size: 11pt;
+      border-top: 1px solid black;
+      margin-top: 6px;
       font-weight: bold;
     }
     .totales td {
-      padding: 12px 0;
+      padding: 3px 0;
     }
     .total-grande {
-      font-size: 48pt; /* 🔥 TOTAL resaltado */
+      font-size: 13pt;
       font-weight: bold;
     }
     .policy {
-      margin-top: 40px;
-      font-size: 34pt;
-      line-height: 1.5;
+      margin-top: 8px;
       text-align: center;
+      font-size: 10pt;
+      line-height: 1.4;
     }
   </style>
 </head>
-<body onload="window.print()">
+<body onload="window.print()" onfocus="window.close()">
 
 <div class="ticket">
   <h1>EL RAPIDIN</h1>
@@ -82,10 +88,10 @@
   <h3>San Martín de Pangoa</h3>
 
   <p class="data"><b>TICKET:</b> <span id="nro_boleta_id"></span></p>
-  <p class="data"><b>MESA:</b> <span id="nro_mesa_id"></span></p>
-  <p class="data"><b>CLIENTE:</b> <span id="cliente_id"></span></p>
+  <p class="data"><b>Cliente:</b> <span id="cliente_id"></span></p>
+  <p class="data bold" id="nro_mesa_id"></p>
   <p class="data" id="nro_direccion_id"></p>
-  <p class="data"><b>FECHA:</b> <span id="fechaR"></span> <b>HORA:</b> <span id="hora"></span></p>
+  <p class="data"><b>FECHA/HORA:</b> <span id="fechaR"></span></p>
 
   <table>
     <thead>
@@ -135,36 +141,37 @@
     return val ? val.split(",") : [];
   }
 
-  // Datos principales
+  // Datos generales
   var nro_boleta = params.get("boleta") || "285826-P-002";
   var nro_mesa = params.get("mesa") || "Mesa 8";
   var cliente = params.get("cliente") || "Cliente Final";
   var direc = params.get("direccion") || "";
-  var fecha = params.get("fecha") || "14/09/2025";
+  var fecha = params.get("fecha") || "09/11/2025";
   var hora = params.get("fecha_entrega") || "18:40:30";
 
+  // Totales
   var total = parseFloat(params.get("total") || 17);
   var efectivo = parseFloat(params.get("pago") || 50);
   var vuelto = parseFloat(params.get("vuelto") || 33);
   var estado = params.get("estado") || "EFECTIVO";
 
-  // Listas
+  // Listas de productos
   const cantidades = parseList(params.get("cantidades")) || ["1","1"];
   const servicios = parseList(params.get("servicios")) || ["Aeropuerto de pollo","Chaufa de pollo"];
   const precios = parseList(params.get("p_unit")) || ["9.00","8.00"];
 
-  // Insertar en el HTML
+  // Render de datos en el ticket
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
   document.getElementById("nro_direccion_id").textContent = direc;
-  document.getElementById("fechaR").textContent = fecha;
-  document.getElementById("hora").textContent = hora;
+  document.getElementById("fechaR").textContent = fecha + " " + hora;
   document.getElementById("total").textContent = total.toFixed(2);
   document.getElementById("efectivo").textContent = efectivo.toFixed(2);
   document.getElementById("devueltas").textContent = vuelto.toFixed(2);
   document.getElementById("estado").textContent = estado;
 
+  // Generar tabla de productos
   const tablaBody = document.getElementById("tablaBody");
   servicios.forEach((serv, i) => {
     if (serv.trim() !== "") {
@@ -172,7 +179,7 @@
       row.innerHTML = `
         <td>${cantidades[i] || 0}</td>
         <td>${serv}</td>
-        <td>${Number(precios[i] || 0).toFixed(2)}</td>
+        <td class="right">${Number(precios[i] || 0).toFixed(2)}</td>
       `;
       tablaBody.appendChild(row);
     }
