@@ -3,42 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=60mm, initial-scale=1.0">
+  <meta name="viewport" content="width=58mm, initial-scale=1.0">
   <title>Ticket de Compra</title>
   <style>
     body {
-      font-family: tahoma, Helvetica, sans-serif;
+      font-family: Tahoma, Helvetica, sans-serif;
       margin: 0;
-      font-size: 3mm;
+      font-size: 2.6mm; /* tamaño base */
       text-align: center;
     }
     #thermal-pos {
-      max-width: 60mm;
+      max-width: 58mm;   /* ancho de tiketera */
+      margin: 0 auto;
     }
+    /* LOGO */
+    .logo img {
+      width: 80px;   /* ajustado para 58mm */
+      height: auto;
+    }
+    /* ENCABEZADO */
+    h3 {
+      margin: 1mm 0;
+      font-size: 3.2mm; /* título restaurante */
+    }
+    .nro_boleta, .nro_mesa {
+      margin: 0;
+      font-size: 3.2mm; /* grande para ticket y mesa */
+    }
+    .cliente, .direccion, .fecha_recepcion {
+      font-size: 2.8mm;
+      margin: 0.5mm 0;
+    }
+    /* TABLA */
     .table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 2mm;
     }
     .table th, .table td {
       text-align: left;
-      padding: 1mm;
+      padding: 0.6mm;
+      font-size: 2.6mm;
+      word-wrap: break-word;
     }
     .table-header h2 {
       margin: 0;
+      font-size: 2.8mm;
     }
-    .table-footer td {
-      padding: 0;
-      line-height: 1.2;
-    }
-    .nro_boleta, .nro_mesa, .direccion, .fecha_recepcion, .cliente {
-      margin: 0;
-    }
-    .policy {
-      margin-top: 5mm;
-    }
+    /* TOTALES */
     .totales {
       width: 100%;
-      font-size: 2.5mm;  /* letra más pequeña */
+      font-size: 2.6mm;
       border-top: 1px dashed black;
       margin-top: 2mm;
     }
@@ -50,6 +65,19 @@
     }
     .totales .valor {
       text-align: right;
+    }
+    /* POLÍTICA */
+    .policy {
+      margin-top: 3mm;
+    }
+    .small-text {
+      font-size: 2mm;  /* texto chiquito al final */
+      line-height: 1.2;
+    }
+    /* CONFIG IMPRESIÓN */
+    @page {
+      size: 58mm auto;
+      margin: 0;
     }
   </style>
 </head>
@@ -80,18 +108,18 @@
   var total = parseFloat(params.get("total") || 0);
   var descuento = parseFloat(params.get("descuento") || 0);
   var devueltas = parseFloat(params.get("subtotal_desc") || 0);
-  var estado = params.get("estado") || "--"; // aquí viene EFECTIVO, YAPE, PLIN
+  var estado = params.get("estado") || "--"; // EFECTIVO, YAPE, PLIN
 
   // Listas de AppSheet
   const cantidades = parseList(params.get("cantidades"));
   const servicios = parseList(params.get("servicios"));
-  const p_unit = parseList(params.get("p_unit")); // aquí ya viene Precio total por fila
+  const p_unit = parseList(params.get("p_unit")); // Precio total por fila
 </script>
 
 <div id="thermal-pos">
   <div class="label">
     <div class="logo" style="text-align:center;">
-      <img src="logo.png" alt="Mi Logo" style="width:120px; height:auto;">
+      <img src="logo.png" alt="Mi Logo">
     </div>
     <br/>
     <h3>
@@ -149,16 +177,10 @@
 
   <div class="policy">
     <p><b>IMPORTANTE:</b></p>
-    <style>
-  .small-text {
-    font-size: 2mm;
-  }
-</style>
-
-<p class="small-text">
-  Comprobante informativo – sin validez fiscal.<br/>
-  Su preferencia nos motiva a seguir brindando lo mejor. <br>
-</p>
+    <p class="small-text">
+      Comprobante informativo – sin validez fiscal.<br/>
+      Su preferencia nos motiva a seguir brindando lo mejor. <br>
+    </p>
   </div>
 </div>
 
@@ -194,4 +216,3 @@
 
 </body>
 </html>
-
