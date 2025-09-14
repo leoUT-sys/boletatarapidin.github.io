@@ -1,134 +1,201 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=60mm, initial-scale=1.0">
-<title>Comanda</title>
-<style>
-  body {
-    font-family: tahoma, Helvetica, sans-serif;
-    margin: 0;
-    font-size: 3mm;
-    text-align: center;
-  }
-  #thermal-pos {
-    max-width: 60mm;
-  }
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 2mm;
-  }
-  .table th, .table td {
-    text-align: left;
-    padding: 1mm;
-  }
-  .table-header h2, .table td h2 {
-    margin: 0;
-    font-weight: bold;
-  }
-  .nro_boleta, .nro_mesa, .fecha_recepcion {
-    margin: 2mm 0;
-  }
-  .totales {
-    width: 100%;
-    font-size: 3mm;
-    margin-top: 2mm;
-    border-top: 1px dashed black;
-  }
-  .totales td {
-    padding: 0.5mm 0;
-  }
-  .totales .label {
-    text-align: left;
-  }
-  .totales .valor {
-    text-align: right;
-  }
-  .comentario {
-    font-size: 2.5mm;
-    font-style: italic;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Ticket 58mm</title>
+  <style>
+    @page {
+      size: 58mm auto;
+      margin: 2mm;
+    }
+    body {
+      font-family: Tahoma, Helvetica, sans-serif;
+      margin: 0;
+      color: black;
+      text-align: center;
+      font-size: 3.5mm; /* texto base más legible */
+    }
+    .ticket {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 7mm;  /* título grande */
+      margin: 2mm 0 1mm 0;
+      font-weight: bold;
+    }
+    h2 {
+      font-size: 5.5mm; /* subtítulo */
+      margin: 0;
+      font-weight: bold;
+    }
+    h3 {
+      font-size: 5mm;
+      margin: 1mm 0 3mm 0;
+      font-weight: bold;
+    }
+    .data {
+      margin: 1.5mm 0;
+      font-size: 4.5mm; /* info cliente más grande */
+    }
+    .ticket-num {
+      font-size: 6mm;
+      font-weight: bold;
+      margin: 2mm 0;
+    }
+    .mesa {
+      font-size: 7mm;
+      font-weight: bold;
+      margin: 2mm 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2mm;
+    }
+    th, td {
+      font-size: 4.5mm;
+      padding: 1mm 0;
+    }
+    th {
+      border-bottom: 1px dashed black;
+      text-align: center;
+      font-weight: bold;
+    }
+    td.right {
+      text-align: right;
+    }
+    .totales {
+      width: 100%;
+      font-size: 5mm;
+      border-top: 1px dashed black;
+      margin-top: 3mm;
+      font-weight: bold;
+    }
+    .totales td {
+      padding: 1mm 0;
+    }
+    .total-grande {
+      font-size: 6.5mm;
+      font-weight: bold;
+    }
+    .policy {
+      margin-top: 4mm;
+      text-align: center;
+      font-size: 4.5mm;
+      line-height: 1.4;
+    }
+  </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
-<script>
-  const params = new URLSearchParams(window.location.search);
+<div class="ticket">
+  <h1>EL RAPIDIN</h1>
+  <h2>Caldos - Chifa - Broaster</h2>
+  <h3>San Martín de Pangoa</h3>
 
-  function parseList(param) {
-    let val = (param || "").replace(/[{}]/g, "").trim();
-    return val ? val.split(",") : [];
-  }
-
-  var nro_boleta = params.get("boleta") || "---";
-  var nro_mesa = params.get("mesa") || "---";
-  var cliente = params.get("cliente") || "---";
-  var fecha = params.get("fecha") || "dd/mm/aaaa hh:mm:ss";
-  var fecha_entrega = params.get("fecha_entrega") || "hh:mm:ss";
-
-  const cantidades = parseList(params.get("cantidades"));
-  const productos = parseList(params.get("servicios"));
-  const comentarios = parseList(params.get("comentarios"));
-
-  const total_general = params.get("total") || "0";
-</script>
-
-<div id="thermal-pos">
-  <div class="label">
-    <h2>COMANDA</h2>
-    <p><b>Pedido:</b> <span id="nro_boleta_id"></span></p>
-    <h1><span id="nro_mesa_id"></span></h1> <!-- Mesa en H1 -->
-    <p><b>Cliente:</b> <span id="cliente_id"></span></p>
-    <p><b>Fecha:</b> <span id="fechaR"></span> <b id="hora"></b></p>
+  <!-- Ticket centrado -->
+  <div class="ticket-num">
+    TICKET<br>
+    <span id="nro_boleta_id"></span>
   </div>
 
-  <table class="table">
-    <tbody id="tablaBody">
-      <!-- Línea arriba del encabezado -->
+  <!-- Cliente -->
+  <p class="data"><b>Cliente:</b> <span id="cliente_id"></span></p>
+
+  <!-- Mesa centrada -->
+  <div class="mesa" id="nro_mesa_id"></div>
+
+  <p class="data" id="nro_direccion_id"></p>
+  <p class="data"><b>F/H:</b> <span id="fechaR"></span></p>
+
+  <table>
+    <thead>
       <tr>
-        <td colspan="2" style="border-top:1px dashed black;"></td>
+        <th>Cant</th>
+        <th>Descripción</th>
+        <th>Total</th>
       </tr>
-      <tr class="table-header">
-        <th><h2>Cant</h2></th>
-        <th><h2>Descripción</h2></th>
-      </tr>
-      <!-- Línea abajo del encabezado -->
-      <tr>
-        <td colspan="2" style="border-bottom:1px dashed black;"></td>
-      </tr>
-    </tbody>
+    </thead>
+    <tbody id="tablaBody"></tbody>
   </table>
 
   <table class="totales">
     <tbody>
       <tr>
-        <td class="label"><h3>TOTAL GENERAL:</h3></td>
-        <td class="valor"><h3 id="total_general"></h3></td>
+        <td class="total-grande">TOTAL:</td>
+        <td class="right total-grande" id="total"></td>
+      </tr>
+      <tr>
+        <td>CANCELA:</td>
+        <td class="right" id="efectivo"></td>
+      </tr>
+      <tr>
+        <td>VUELTO:</td>
+        <td class="right" id="devueltas"></td>
+      </tr>
+      <tr>
+        <td>PAGO:</td>
+        <td class="right" id="estado"></td>
       </tr>
     </tbody>
   </table>
+
+  <div class="policy">
+    * Comprobante informativo *<br>
+    ¡Gracias por su preferencia!
+  </div>
 </div>
 
 <script>
+  const params = new URLSearchParams(window.location.search);
+
+  function parseList(param) {
+    let val = (param || "")
+                .replace(/[{}]/g, "")
+                .replace(/\s+/g, "");
+    return val ? val.split(",") : [];
+  }
+
+  // Datos generales
+  var nro_boleta = params.get("boleta") || "285826-P-002";
+  var nro_mesa = params.get("mesa") || "Mesa 8";
+  var cliente = params.get("cliente") || "Cliente Final";
+  var direc = params.get("direccion") || "";
+  var fecha = params.get("fecha") || "14/09/2025";
+  var hora = params.get("fecha_entrega") || "12:45:00";
+
+  // Totales
+  var total = parseFloat(params.get("total") || 45);
+  var efectivo = parseFloat(params.get("pago") || 50);
+  var vuelto = parseFloat(params.get("vuelto") || 5);
+  var estado = params.get("estado") || "EFECTIVO";
+
+  // Listas de productos
+  const cantidades = parseList(params.get("cantidades")) || ["2","1"];
+  const servicios = parseList(params.get("servicios")) || ["Aeropuerto","Broaster 1/4"];
+  const precios = parseList(params.get("p_unit")) || ["30.00","15.00"];
+
+  // Render de datos en el ticket
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = nro_mesa;
   document.getElementById("cliente_id").textContent = cliente;
-  document.getElementById("fechaR").textContent = fecha;
-  document.getElementById("hora").textContent = fecha_entrega;
-  document.getElementById("total_general").textContent = "S/ " + Number(total_general).toFixed(2);
+  document.getElementById("nro_direccion_id").textContent = direc;
+  document.getElementById("fechaR").textContent = fecha + " " + hora;
+  document.getElementById("total").textContent = total.toFixed(2);
+  document.getElementById("efectivo").textContent = efectivo.toFixed(2);
+  document.getElementById("devueltas").textContent = vuelto.toFixed(2);
+  document.getElementById("estado").textContent = estado;
 
+  // Generar tabla de productos
   const tablaBody = document.getElementById("tablaBody");
-  productos.forEach((prod, i) => {
-    if (prod.trim() !== "") {
+  servicios.forEach((serv, i) => {
+    if (serv.trim() !== "") {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td><h2>${cantidades[i] || 0}</h2></td>
-        <td>
-          <h2>${prod}</h2>
-          <div class="comentario">${comentarios[i] && comentarios[i].trim() !== "" ? comentarios[i] : "-"}</div>
-        </td>
+        <td>${cantidades[i] || 0}</td>
+        <td>${serv}</td>
+        <td class="right">${Number(precios[i] || 0).toFixed(2)}</td>
       `;
       tablaBody.appendChild(row);
     }
@@ -137,8 +204,3 @@
 
 </body>
 </html>
-
-
-
-
-
