@@ -9,56 +9,56 @@
     body {
       font-family: Tahoma, Helvetica, sans-serif;
       margin: 0;
-      font-size: 2.6mm; /* tamaño base */
+      font-size: 12px;  /* tamaño base legible */
       text-align: center;
     }
     #thermal-pos {
-      max-width: 58mm;   /* ancho de tiketera */
+      width: 58mm;   /* ancho fijo para tiketera */
       margin: 0 auto;
     }
     /* LOGO */
     .logo img {
-      width: 80px;   /* ajustado para 58mm */
+      width: 100px;   /* ajustado para 58mm */
       height: auto;
     }
     /* ENCABEZADO */
     h3 {
-      margin: 1mm 0;
-      font-size: 3.2mm; /* título restaurante */
+      margin: 4px 0;
+      font-size: 14px; /* más visible */
     }
     .nro_boleta, .nro_mesa {
       margin: 0;
-      font-size: 3.2mm; /* grande para ticket y mesa */
+      font-size: 16px; /* destacado */
     }
     .cliente, .direccion, .fecha_recepcion {
-      font-size: 2.8mm;
-      margin: 0.5mm 0;
+      font-size: 12px;
+      margin: 2px 0;
     }
     /* TABLA */
     .table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 2mm;
+      margin-top: 4px;
     }
     .table th, .table td {
       text-align: left;
-      padding: 0.6mm;
-      font-size: 2.6mm;
+      padding: 2px;
+      font-size: 12px;
       word-wrap: break-word;
     }
     .table-header h2 {
       margin: 0;
-      font-size: 2.8mm;
+      font-size: 13px;
     }
     /* TOTALES */
     .totales {
       width: 100%;
-      font-size: 2.6mm;
+      font-size: 12px;
       border-top: 1px dashed black;
-      margin-top: 2mm;
+      margin-top: 4px;
     }
     .totales td {
-      padding: 0.5mm 0;
+      padding: 2px 0;
     }
     .totales .label {
       text-align: left;
@@ -68,16 +68,11 @@
     }
     /* POLÍTICA */
     .policy {
-      margin-top: 3mm;
+      margin-top: 6px;
     }
     .small-text {
-      font-size: 2mm;  /* texto chiquito al final */
+      font-size: 10px;
       line-height: 1.2;
-    }
-    /* CONFIG IMPRESIÓN */
-    @page {
-      size: 58mm auto;
-      margin: 0;
     }
   </style>
 </head>
