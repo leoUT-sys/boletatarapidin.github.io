@@ -4,94 +4,32 @@
   <meta charset="UTF-8">
   <title>Comanda 58mm</title>
   <style>
-    @page {
-      size: 58mm auto;
-      margin: 2mm;
-    }
-    body {
-      font-family: Tahoma, Helvetica, sans-serif;
-      margin: 0;
-      text-align: center;
-      font-size: 4mm;
-      color: black;
-    }
-    .ticket {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    h1 {
-      font-size: 8mm;
-      margin: 1mm 0;
-      font-weight: bold;
-    }
-    .ticket-num {
-      font-size: 7mm;
-      font-weight: bold;
-      margin: 1mm 0;
-    }
-    .mesa {
-      font-size: 7mm;
-      font-weight: bold;
-      margin: 1mm 0;
-    }
-    .fecha {
-      font-size: 4mm;
-      margin: 1mm 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1mm;
-    }
-    th, td {
-      font-size: 5mm;
-      padding: 0.5mm 1mm;
-      text-align: left;
-      word-wrap: break-word;
-    }
-    th {
-      border-bottom: 1px dashed black;
-      text-align: center;
-      font-weight: bold;
-    }
-    td.right {
-      text-align: right;
-    }
-    .comentario {
-      font-size: 3.5mm;
-      font-style: italic;
-      text-align: center; /* centrado */
-      margin: 0;
-      padding: 0 1mm 0 1mm;
-    }
-    .total {
-      font-size: 4.5mm;
-      font-weight: bold;
-      margin-top: 1mm;
-      text-align: right;
-    }
-    .policy {
-      margin-top: 1mm;
-      font-size: 3.5mm;
-      line-height: 1.2;
-    }
+    @page { size: 58mm auto; margin: 2mm; }
+    body { font-family: Tahoma, Helvetica, sans-serif; margin: 0; font-size: 4mm; text-align: center; }
+    .ticket { width: 100%; box-sizing: border-box; }
+    h1 { font-size: 8mm; margin: 1mm 0; font-weight: bold; }
+    .ticket-num, .mesa { font-size: 7mm; font-weight: bold; margin: 1mm 0; }
+    .fecha { font-size: 4mm; margin: 1mm 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1mm; }
+    th, td { font-size: 5mm; padding: 0.5mm 1mm; text-align: left; word-wrap: break-word; }
+    th { border-bottom: 1px dashed black; text-align: center; font-weight: bold; }
+    td.right { text-align: right; }
+    .comentario { font-size: 3.5mm; font-style: italic; margin-left: 1mm; } /* alineado debajo de la descripción */
+    .total { font-size: 4.5mm; font-weight: bold; margin-top: 1mm; text-align: right; }
+    .policy { margin-top: 1mm; font-size: 3.5mm; line-height: 1.2; }
   </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
 <div class="ticket">
   <h1>COMANDA</h1>
-
   <div class="ticket-num" id="nro_boleta_id"></div>
   <div class="mesa" id="nro_mesa_id"></div>
   <div class="fecha" id="fecha_impresion"></div>
 
   <table>
     <thead>
-      <tr>
-        <th>Cant</th>
-        <th>Descripción</th>
-      </tr>
+      <tr><th>Cant</th><th>Descripción</th></tr>
     </thead>
     <tbody id="tablaBody"></tbody>
   </table>
@@ -102,11 +40,7 @@
 
 <script>
   const params = new URLSearchParams(window.location.search);
-
-  function parseList(param) {
-    let val = (param || "").replace(/[{}]/g, "").trim();
-    return val ? val.split(",") : [];
-  }
+  function parseList(param){ return (param||"").replace(/[{}]/g,"").trim().split(","); }
 
   var nro_boleta = params.get("boleta") || "---";
   var mesa = params.get("mesa") || "---";
@@ -117,26 +51,24 @@
 
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
   document.getElementById("nro_mesa_id").textContent = "PARA: " + mesa;
-
   const ahora = new Date();
-  document.getElementById("fecha_impresion").textContent =
-    ahora.toLocaleDateString("es-PE") + " " + ahora.toLocaleTimeString("es-PE");
+  document.getElementById("fecha_impresion").textContent = ahora.toLocaleDateString("es-PE") + " " + ahora.toLocaleTimeString("es-PE");
 
   let total = 0;
   const tablaBody = document.getElementById("tablaBody");
-  servicios.forEach((serv, i) => {
-    if (serv.trim() !== "") {
-      const cantidad = cantidades[i] || 0;
-      total += Number(precios[i] || 0);
+  servicios.forEach((serv,i)=>{
+    if(serv.trim()!==""){
+      const cantidad = cantidades[i]||0;
+      total += Number(precios[i]||0);
 
       const row = document.createElement("tr");
       row.innerHTML = `<td>${cantidad}</td><td><b>${serv}</b></td>`;
       tablaBody.appendChild(row);
 
-      // Comentario centrado debajo del producto
-      if (comentarios[i] && comentarios[i].trim() !== "") {
+      // Comentario debajo de la descripción
+      if(comentarios[i] && comentarios[i].trim()!==""){
         const commentRow = document.createElement("tr");
-        commentRow.innerHTML = `<td colspan="2" class="comentario">${comentarios[i]}</td>`;
+        commentRow.innerHTML = `<td></td><td class="comentario">${comentarios[i]}</td>`;
         tablaBody.appendChild(commentRow);
       }
     }
