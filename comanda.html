@@ -12,7 +12,7 @@
       font-family: Tahoma, Helvetica, sans-serif;
       margin: 0;
       text-align: center;
-      font-size: 4mm; /* base de letra más grande para legibilidad */
+      font-size: 4mm;
       color: black;
     }
     .ticket {
@@ -44,8 +44,8 @@
       margin-top: 2mm;
     }
     th, td {
-      font-size: 5mm; /* más grande para cocina */
-      padding: 1.5mm 0; /* más espacio entre filas */
+      font-size: 5.5mm;
+      padding: 2mm 0;
       text-align: left;
       word-wrap: break-word;
     }
@@ -57,8 +57,13 @@
     td.right {
       text-align: right;
     }
+    .comentario {
+      font-size: 4mm;
+      font-style: italic;
+      margin-bottom: 1mm;
+    }
     .total {
-      font-size: 6mm;
+      font-size: 5mm;
       font-weight: bold;
       margin-top: 2mm;
       text-align: right;
@@ -103,10 +108,11 @@
 
   // Datos
   var nro_boleta = params.get("boleta") || "---";
-  var mesa = params.get("mesa") || "---"; // puede ser "MESA 4" o "LLEVAR"
+  var mesa = params.get("mesa") || "---";
   const cantidades = parseList(params.get("cantidades"));
   const servicios = parseList(params.get("servicios"));
-  const precios = parseList(params.get("p_unit"));
+  const comentarios = parseList(params.get("comentarios"));
+  const precios = parseList(params.get("total")); // precio de cada producto si lo necesitas
 
   // Número de ticket
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
@@ -125,14 +131,22 @@
   servicios.forEach((serv, i) => {
     if (serv.trim() !== "") {
       const cantidad = cantidades[i] || 0;
-      const precio = Number(precios[i] || 0);
-      total += precio;
+      total += Number(precios[i] || 0);
+
+      // fila del producto con descripción en negrita
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${cantidad}</td>
-        <td>${serv}</td>
+        <td><b>${serv}</b></td>
       `;
       tablaBody.appendChild(row);
+
+      // comentario si existe
+      if (comentarios[i] && comentarios[i].trim() !== "") {
+        const commentRow = document.createElement("tr");
+        commentRow.innerHTML = `<td colspan="2" class="comentario">${comentarios[i]}</td>`;
+        tablaBody.appendChild(commentRow);
+      }
     }
   });
 
