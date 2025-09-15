@@ -45,7 +45,7 @@
     }
     th, td {
       font-size: 5mm;
-      padding: 0.5mm 1mm;  /* filas más compactas */
+      padding: 0.5mm 1mm;
       text-align: left;
       word-wrap: break-word;
     }
@@ -60,8 +60,9 @@
     .comentario {
       font-size: 3.5mm;
       font-style: italic;
+      text-align: center; /* centrado */
       margin: 0;
-      padding: 0 1mm 0 1mm;  /* menos espacio arriba y abajo */
+      padding: 0 1mm 0 1mm;
     }
     .total {
       font-size: 4.5mm;
@@ -107,7 +108,6 @@
     return val ? val.split(",") : [];
   }
 
-  // Datos
   var nro_boleta = params.get("boleta") || "---";
   var mesa = params.get("mesa") || "---";
   const cantidades = parseList(params.get("cantidades"));
@@ -122,7 +122,6 @@
   document.getElementById("fecha_impresion").textContent =
     ahora.toLocaleDateString("es-PE") + " " + ahora.toLocaleTimeString("es-PE");
 
-  // Tabla productos
   let total = 0;
   const tablaBody = document.getElementById("tablaBody");
   servicios.forEach((serv, i) => {
@@ -134,7 +133,7 @@
       row.innerHTML = `<td>${cantidad}</td><td><b>${serv}</b></td>`;
       tablaBody.appendChild(row);
 
-      // Comentario debajo sin mucho espacio
+      // Comentario centrado debajo del producto
       if (comentarios[i] && comentarios[i].trim() !== "") {
         const commentRow = document.createElement("tr");
         commentRow.innerHTML = `<td colspan="2" class="comentario">${comentarios[i]}</td>`;
