@@ -21,31 +21,31 @@
     }
     h1 {
       font-size: 8mm;
-      margin: 2mm 0 1mm 0;
+      margin: 1mm 0;
       font-weight: bold;
     }
     .ticket-num {
       font-size: 7mm;
       font-weight: bold;
-      margin: 2mm 0;
+      margin: 1mm 0;
     }
     .mesa {
       font-size: 7mm;
       font-weight: bold;
-      margin: 2mm 0;
+      margin: 1mm 0;
     }
     .fecha {
-      font-size: 4.5mm;
-      margin: 1.5mm 0;
+      font-size: 4mm;
+      margin: 1mm 0;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 2mm;
+      margin-top: 1mm;
     }
     th, td {
-      font-size: 5.5mm;
-      padding: 2mm 0;
+      font-size: 5mm;
+      padding: 0.5mm 1mm;  /* filas más compactas */
       text-align: left;
       word-wrap: break-word;
     }
@@ -58,18 +58,19 @@
       text-align: right;
     }
     .comentario {
-      font-size: 4mm;
+      font-size: 3.5mm;
       font-style: italic;
-      margin-bottom: 1mm;
+      margin: 0;
+      padding: 0 1mm 0 1mm;  /* menos espacio arriba y abajo */
     }
     .total {
-      font-size: 5mm;
+      font-size: 4.5mm;
       font-weight: bold;
-      margin-top: 2mm;
+      margin-top: 1mm;
       text-align: right;
     }
     .policy {
-      margin-top: 3mm;
+      margin-top: 1mm;
       font-size: 3.5mm;
       line-height: 1.2;
     }
@@ -112,20 +113,16 @@
   const cantidades = parseList(params.get("cantidades"));
   const servicios = parseList(params.get("servicios"));
   const comentarios = parseList(params.get("comentarios"));
-  const precios = parseList(params.get("total")); // precio de cada producto si lo necesitas
+  const precios = parseList(params.get("total"));
 
-  // Número de ticket
   document.getElementById("nro_boleta_id").textContent = nro_boleta;
-
-  // Mesa con "PARA:"
   document.getElementById("nro_mesa_id").textContent = "PARA: " + mesa;
 
-  // Fecha y hora de impresión
   const ahora = new Date();
   document.getElementById("fecha_impresion").textContent =
     ahora.toLocaleDateString("es-PE") + " " + ahora.toLocaleTimeString("es-PE");
 
-  // Renderizar tabla de productos
+  // Tabla productos
   let total = 0;
   const tablaBody = document.getElementById("tablaBody");
   servicios.forEach((serv, i) => {
@@ -133,15 +130,11 @@
       const cantidad = cantidades[i] || 0;
       total += Number(precios[i] || 0);
 
-      // fila del producto con descripción en negrita
       const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${cantidad}</td>
-        <td><b>${serv}</b></td>
-      `;
+      row.innerHTML = `<td>${cantidad}</td><td><b>${serv}</b></td>`;
       tablaBody.appendChild(row);
 
-      // comentario si existe
+      // Comentario debajo sin mucho espacio
       if (comentarios[i] && comentarios[i].trim() !== "") {
         const commentRow = document.createElement("tr");
         commentRow.innerHTML = `<td colspan="2" class="comentario">${comentarios[i]}</td>`;
@@ -150,7 +143,6 @@
     }
   });
 
-  // Total
   document.getElementById("total").textContent = total.toFixed(2);
 </script>
 
